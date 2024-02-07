@@ -1,6 +1,5 @@
 # Bikes-COMP30830
 A project about bikes for COMP30830 the main objective is to create a Web Application that is able to make prediction about the avalibility of the bike system using different APIs to collect data and make predictions.
-![The main stucture of the server](/Images/StructureDraft.png   "Structure Draft Image")
 
 ## Uses
 This project aims to improve the quality of commuting by providing real-time information about bike station availability and other relevant data.
@@ -32,6 +31,9 @@ This project aims to improve the quality of commuting by providing real-time inf
 - APP'ish' Interface to the Web
 - Get Information about the Bike (e.g., electric or not)
 - Change Station/Bike Map Appearance Based on Availability
+- 
+## Structure of the system (Draft)
+![The main stucture of the server](/Images/StructureDraft.png   "Structure Draft Image")
 
 ## Tools and Repository
 
