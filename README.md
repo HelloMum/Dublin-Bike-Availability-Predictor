@@ -1,6 +1,6 @@
 # Bikes-COMP30830
 A project about bikes for COMP30830 the main objective is to create a Web Application that is able to make prediction about the avalibility of the bike system using different APIs to collect data and make predictions.
-![](/home/hp/IdeaProjects/Bikes-COMP30830/StructureDraft.png "Structure of our server")
+[](![StructureDraft.png](StructureDraft.png))
 ## Uses
 This project aims to improve the quality of commuting by providing real-time information about bike station availability and other relevant data.
 
