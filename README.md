@@ -33,7 +33,14 @@ This project aims to improve the quality of commuting by providing real-time inf
 - Change Station/Bike Map Appearance Based on Availability
 - 
 ## Structure of the system (Draft)
-![The main stucture of the server](/Images/StructureDraft.png   "Structure Draft Image")
+- The system is based on AWS
+- The deployment of the instance is created using flask
+- The environment is keep consistent with the development environment by using conda 
+- The Web deploy is based on Apache using the AWS infrastructure
+- The Data base is MySQL and deployed in the Amazon RDS
+- The Direct deployment is based from the main branch in the GitHub repository
+
+![The main structure of the server](/Images/StructureDraft.png   "Structure Draft Image")
 
 ## Tools and Repository
 
