@@ -40,7 +40,7 @@ This project aims to improve the quality of commuting by providing real-time inf
 - The Data base is MySQL and deployed in the Amazon RDS
 - The Direct deployment is based from the main branch in the GitHub repository
 
-![The main structure of the server](Images/StructureDraft.png   "Structure Draft Image")
+![The main structure of the server](Images/StructureDraft.svg   "Structure Draft Image")
 
 ## Tools and Repository
 
