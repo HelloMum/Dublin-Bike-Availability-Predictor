@@ -14,7 +14,7 @@ def get_stations_data(api_key, contract_name):
 # Fetch data from JCDecaux API
 stations_data = get_stations_data(API_KEY, CONTRACT_NAME)
 
-# Create a DataFrame
+# Create a DataFrame.
 df = pd.json_normalize(stations_data)
 
 print(df.head())
