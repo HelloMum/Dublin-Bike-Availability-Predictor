@@ -23,10 +23,14 @@ def stations_to_db(text):
     print(type(stations), len(stations))
     for station in stations:
         print(station)
-        vals = (station.get('address'), int(station.get('banking'))), 
-        station.get('bike_stands'), int(station.get('bonus')), 
-        station.get('contract_name'), station.get('name'),
-        station.get('position').get('lat'), station.get('position').get('lng'), 
+        vals = (station.get('address'), 
+        int(station.get('banking'))), 
+        station.get('bike_stands'), 
+        int(station.get('bonus')), 
+        station.get('contract_name'), 
+        station.get('name'),
+        station.get('position').get('lat'), 
+        station.get('position').get('lng'), 
         station.get('status'), 
         int(station.get('availabilities').get('bikes')),
         int(station.get('availabilities').get('stands')),
