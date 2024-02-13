@@ -12,6 +12,11 @@ CONTRACT_NAME = 'dublin'
 STATIONS = "https://api.jcdecaux.com/vls/v1/stations"
 engine = 
 
+#run it using crontab
+cron = crontab(user = 'root')
+job = cron.new(command = 'main()')
+job.minute.every(5)
+cron.write()
 
 
 def write_to_file(text):
