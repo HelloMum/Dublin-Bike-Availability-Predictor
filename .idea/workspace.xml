@@ -4,16 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a84ec950-0c1d-4ebd-82ca-8f833d8e0ceb" name="Changes" comment="The crontab should be defined in the instance, the program will run once now">
-      <change afterPath="$PROJECT_DIR$/Scrapper/Bikes/bike_cron_setup.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Scrapper/Weather/weather_cron_setup.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Scrapper/installcron.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Scrapper/Bikes/bike api test.py" beforeDir="false" afterPath="$PROJECT_DIR$/Scrapper/Bikes/bike_api_test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Scrapper/Bikes/scraper.py" beforeDir="false" afterPath="$PROJECT_DIR$/Scrapper/Bikes/bike_scraper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Scrapper/Weather/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Scrapper/Weather/TestOpenWeatherJson.py" beforeDir="false" afterPath="$PROJECT_DIR$/Scrapper/Weather/weather_api_test.py" afterDir="false" />
-    </list>
+    <list default="true" id="a84ec950-0c1d-4ebd-82ca-8f833d8e0ceb" name="Changes" comment="updated work space" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -100,7 +91,7 @@
       <workItem from="1707992561068" duration="9000" />
       <workItem from="1707992580267" duration="1882000" />
       <workItem from="1707998786161" duration="14000" />
-      <workItem from="1707998809838" duration="2171000" />
+      <workItem from="1707998809838" duration="2522000" />
     </task>
     <task id="LOCAL-00001" summary="The crontab should be defined in the instance, the program will run once now">
       <option name="closed" value="true" />
@@ -110,7 +101,55 @@
       <option name="project" value="LOCAL" />
       <updated>1707993856026</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Few changes to refactor naming into a more standard structure">
+      <option name="closed" value="true" />
+      <created>1708001157762</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1708001157763</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Install cron on the aws server as the last versions dont have it present">
+      <option name="closed" value="true" />
+      <created>1708001194462</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1708001194462</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Configure the cron routine for bike scrapper">
+      <option name="closed" value="true" />
+      <created>1708001252286</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1708001252286</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Configure the cron routine for weather scrapper">
+      <option name="closed" value="true" />
+      <created>1708001267760</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1708001267760</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Not necessary anymore">
+      <option name="closed" value="true" />
+      <created>1708001284104</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1708001284104</updated>
+    </task>
+    <task id="LOCAL-00007" summary="updated work space">
+      <option name="closed" value="true" />
+      <created>1708001318059</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1708001318059</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -130,7 +169,13 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Merge branch 'dev' of https://github.com/HelloMum/Bikes-COMP30830 into dev" />
     <MESSAGE value="The crontab should be defined in the instance, the program will run once now" />
-    <option name="LAST_COMMIT_MESSAGE" value="The crontab should be defined in the instance, the program will run once now" />
+    <MESSAGE value="Few changes to refactor naming into a more standard structure" />
+    <MESSAGE value="Install cron on the aws server as the last versions dont have it present" />
+    <MESSAGE value="Configure the cron routine for bike scrapper" />
+    <MESSAGE value="Configure the cron routine for weather scrapper" />
+    <MESSAGE value="Not necessary anymore" />
+    <MESSAGE value="updated work space" />
+    <option name="LAST_COMMIT_MESSAGE" value="updated work space" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Branch_Bikes_COMP30830$scraper.coverage" NAME="scraper Coverage Results" MODIFIED="1707992604920" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Scrapper/Bikes" />
