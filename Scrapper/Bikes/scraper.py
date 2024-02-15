@@ -1,8 +1,6 @@
+# This program needs to be added in the crontab in 5 minutes interval
 import requests
-import pandas as pd
 import json
-import time
-import crontab
 import traceback
 import datetime 
 
@@ -12,11 +10,6 @@ CONTRACT_NAME = 'dublin'
 STATIONS = "https://api.jcdecaux.com/vls/v1/stations"
 engine = 
 
-#run it using crontab
-cron = crontab(user = 'root')
-job = cron.new(command = 'main()')
-job.minute.every(5)
-cron.write()
 
 
 def write_to_file(text):
@@ -48,18 +41,15 @@ def stations_to_db(text):
     
 # Function to get stations data
 def main ():
-    while True:
-        try:
-            now = datetime.datetime.now()
-            r = requests.get(STATIONS, paramsq = {"apiKey": API_KEY, "contract": CONTRACT_NAME})
-            print(r, now)
-            write_to_file(r.text)
-            stations_to_db(r.text)
-            #sleep for 5mins
-            time.sleep(5 * 60)
-        except:
-            # if there is any problem, print the traceback
-            print(traceback.format_exc())
-            if engine is None:
-                return 
+    try:
+        now = datetime.datetime.now()
+        r = requests.get(STATIONS, paramsq = {"apiKey": API_KEY, "contract": CONTRACT_NAME})
+        print(r, now)
+        write_to_file(r.text)
+        stations_to_db(r.text)
+    except:
+        # if there is any problem, print the traceback
+        print(traceback.format_exc())
+        if engine is None:
+            return
 
