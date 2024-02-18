@@ -1,15 +1,21 @@
 # This program needs to be added in the crontab in 5 minutes interval
+# Command into the aws instance ->> # crontab 5 * * * * python /home/bike_api_test.py
+
 import requests
 import json
 import traceback
 import datetime 
+import sqlalchemy as db
+
 
 # Constants
-API_KEY = '8e2d39566206c680b37fa532dc58214a023b6783' 
+API_KEY = '8e2d39566206c680b37fa532dc58214a023b6783'  ### Just for the weather data
 CONTRACT_NAME = 'dublin'  
 STATIONS = "https://api.jcdecaux.com/vls/v1/stations"
-engine = 
 
+#### SQL Code #### 
+DB_URI = mysql+pymysql://admin2:B!kes2JMT@ec2-18-201-241-79.eu-west-1.compute.amazonaws.com/bikesdatabasegroup2
+engine = create_engine(DB_URI, echo = True)
 
 
 def write_to_file(text):
@@ -38,7 +44,7 @@ def stations_to_db(text):
         engine.execute("insert into station values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", vals)
         break
     return
-    
+
 # Function to get stations data
 def main ():
     try:
@@ -47,6 +53,7 @@ def main ():
         print(r, now)
         write_to_file(r.text)
         stations_to_db(r.text)
+
     except:
         # if there is any problem, print the traceback
         print(traceback.format_exc())
