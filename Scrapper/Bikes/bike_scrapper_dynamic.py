@@ -33,7 +33,7 @@ logger.addHandler(file_handler)
 
 def stations_to_db_dynamic(cursor, station):
     utc_now = datetime.now(timezone.utc)
-    formatted_utc_now = utc_now.strftime('%Y-%m-%d %H:%M:%S')  # Remove the last 3 digits to get milliseconds
+    formatted_utc_now = utc_now.strftime('%Y-%m-%d %H:%M:%S')
     last_update_timestamp = station.get('last_update') / 1000.0
     last_update_datetime = datetime.utcfromtimestamp(last_update_timestamp)
 
