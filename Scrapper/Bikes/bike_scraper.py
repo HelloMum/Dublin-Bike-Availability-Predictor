@@ -22,34 +22,43 @@ def write_to_file(response, now):
     directory = "data"
     if not os.path.exists(directory):
         os.makedirs(directory)
-    with open(os.path.join(directory, "bikes_{}.txt".format(now).replace(" ", "_")), "w") as f:
+    with open(os.path.join(directory, "bikes_{}.txt".format(now).replace(":", "-")), "w") as f:
         f.write(response.text)
 
 
 def stations_to_db(text):
     stations = json.loads(text)
+    connection = engine.connect()
     print(type(stations), len(stations))
     for station in stations:
         print(station)
+        total_stands = station.get('totalStands', {})
+        main_stands = station.get('mainStands', {})
+        total_availabilities = total_stands.get('availabilities', {})
+        main_availabilities = main_stands.get('availabilities', {})
+        
         vals = (
-        station.get('number'), 
-        station.get('address'), 
-        int(station.get('banking')), 
-        station.get('bike_stands'), 
-        int(station.get('bonus')), 
-        station.get('contract_name'), 
-        station.get('name'),
-        station.get('position').get('lat'), 
-        station.get('position').get('lng'), 
-        station.get('status'), 
-        int(station.get('availabilities').get('bikes')),
-        int(station.get('availabilities').get('stands')),
-        int(station.get('availabilities').get('mechanicalBikes')), 
-        int(station.get('availabilities').get('electricalBikes')),
+            station.get('number'), 
+            station.get('address'), 
+            int(station.get('banking')), 
+            station.get('bike_stands'), 
+            int(station.get('bonus')), 
+            station.get('contract_name'), 
+            station.get('name'),
+            station.get('position').get('lat'), 
+            station.get('position').get('lng'), 
+            station.get('status'), 
+            int(total_availabilities.get('bikes', 0)),
+            int(total_availabilities.get('stands', 0)),
+            int(total_availabilities.get('mechanicalBikes', 0)),
+            int(total_availabilities.get('electricalBikes', 0)),
+            int(main_availabilities.get('mechanicalBikes', 0)),
+            int(main_availabilities.get('electricalBikes', 0)),
         )
-        engine.execute("INSERT INTO station (number, address, banking, bike_stands, bonus, contract_name, name, lat, lng, status, available_bikes, available_stands, mechanical_bikes, electrical_bikes) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", vals)
+        connection.execute("INSERT INTO station (number, address, banking, bike_stands, bonus, contract_name, name, lat, lng, status, available_bikes, available_stands, total_mechanical_bikes, total_electrical_bikes, main_mechanical_bikes, main_electrical_bikes) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", vals)
 
     return
+
 
 # Function to get stations data
 def main ():
