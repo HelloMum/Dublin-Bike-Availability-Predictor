@@ -5,20 +5,20 @@ import requests
 import json
 import traceback
 import datetime 
-import sqlalchemy as db
+from sqlalchemy import create_engine
 
 
 # Constants
-API_KEY = '8e2d39566206c680b37fa532dc58214a023b6783'  ### Just for the weather data
+API_KEY = '8e2d39566206c680b37fa532dc58214a023b6783'  ### Just for the bike data
 CONTRACT_NAME = 'dublin'  
 STATIONS = "https://api.jcdecaux.com/vls/v1/stations"
 
 #### SQL Code #### 
-DB_URI = mysql+pymysql://admin2:B!kes2JMT@ec2-18-201-241-79.eu-west-1.compute.amazonaws.com/bikesdatabasegroup2
+DB_URI = "mysql+pymysql://admin2:B!kes2JMT@ec2-18-201-241-79.eu-west-1.compute.amazonaws.com/bikesdatabasegroup2"
 engine = create_engine(DB_URI, echo = True)
 
 
-def write_to_file(text):
+def write_to_file(text, now):
     with open("data/bikes_{}".format(now).replace(" ", "_"), "w") as f:
         f.write(r.text)
 
@@ -27,8 +27,10 @@ def stations_to_db(text):
     print(type(stations), len(stations))
     for station in stations:
         print(station)
-        vals = (station.get('address'), 
-        int(station.get('banking'))), 
+        vals = (
+        station.get('number'), 
+        station.get('address'), 
+        int(station.get('banking')), 
         station.get('bike_stands'), 
         int(station.get('bonus')), 
         station.get('contract_name'), 
@@ -40,18 +42,18 @@ def stations_to_db(text):
         int(station.get('availabilities').get('stands')),
         int(station.get('availabilities').get('mechanicalBikes')), 
         int(station.get('availabilities').get('electricalBikes')),
-        
-        engine.execute("insert into station values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", vals)
-        break
+        )
+        engine.execute("INSERT INTO station (number, address, banking, bike_stands, bonus, contract_name, name, lat, lng, status, available_bikes, available_stands, mechanical_bikes, electrical_bikes) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", vals)
+
     return
 
 # Function to get stations data
 def main ():
     try:
         now = datetime.datetime.now()
-        r = requests.get(STATIONS, paramsq = {"apiKey": API_KEY, "contract": CONTRACT_NAME})
+        r = requests.get(STATIONS, params = {"apiKey": API_KEY, "contract": CONTRACT_NAME})
         print(r, now)
-        write_to_file(r.text)
+        write_to_file(r.text, now)
         stations_to_db(r.text)
 
     except:
@@ -59,4 +61,7 @@ def main ():
         print(traceback.format_exc())
         if engine is None:
             return
+        
+if __name__ == "__main__":
+    main()
 
