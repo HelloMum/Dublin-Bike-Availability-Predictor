@@ -7,7 +7,7 @@ echo "This program will check if the cron entry for bike_api_test.py every 5 min
 echo "Create CRON entry"
 
 # The entry will be added with the normal python install. This should be running from miniconda once is setup
-new_entry="5 * * * * python /home/bike_api_test.py"
+new_entry="5 * * * * python /home/bike_scrapper_dynamic.py"
 
 # This will check to see if is already there
 if ! crontab -l | fgrep -q "$new_entry"; then
