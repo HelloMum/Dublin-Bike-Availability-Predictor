@@ -18,12 +18,12 @@ DB_URI = "mysql+pymysql://admin2:B!kes2JMT@ec2-18-201-241-79.eu-west-1.compute.a
 engine = create_engine(DB_URI, echo = True)
 
 
-def write_to_file(text, now):
+def write_to_file(response, now):
     directory = "data"
     if not os.path.exists(directory):
         os.makedirs(directory)
     with open(os.path.join(directory, "bikes_{}.txt".format(now).replace(" ", "_")), "w") as f:
-        f.write(text)
+        f.write(response.text)
 
 
 def stations_to_db(text):
@@ -56,8 +56,7 @@ def main ():
     try:
         now = datetime.datetime.now()
         r = requests.get(STATIONS, params = {"apiKey": API_KEY, "contract": CONTRACT_NAME})
-        print(r, now)
-        write_to_file(r.text, now)
+        write_to_file(r, now)
         stations_to_db(r.text)
 
     except:
