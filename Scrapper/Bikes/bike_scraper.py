@@ -1,6 +1,6 @@
 # This program needs to be added in the crontab in 5 minutes interval
 # Command into the aws instance ->> # crontab 5 * * * * python /home/bike_api_test.py
-
+import os
 import requests
 import json
 import traceback
@@ -19,8 +19,12 @@ engine = create_engine(DB_URI, echo = True)
 
 
 def write_to_file(text, now):
-    with open("data/bikes_{}".format(now).replace(" ", "_"), "w") as f:
-        f.write(r.text)
+    directory = "data"
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    with open(os.path.join(directory, "bikes_{}.txt".format(now).replace(" ", "_")), "w") as f:
+        f.write(text)
+
 
 def stations_to_db(text):
     stations = json.loads(text)
