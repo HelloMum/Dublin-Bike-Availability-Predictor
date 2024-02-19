@@ -59,7 +59,8 @@ def tables_setup(cursor):
                           "          place_name VARCHAR(255),\n"
                           "          place_address VARCHAR(255),\n"
                           "          place_latitude DECIMAL(10, 6),\n"
-                          "          place_longitude DECIMAL(10, 6)\n"
+                          "          place_longitude DECIMAL(10, 6),\n"
+                          "          api_update TIMESTAMP\n"
                           "      )\n"
                           "      ")
     try:
