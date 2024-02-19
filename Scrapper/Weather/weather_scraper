@@ -1,0 +1,8 @@
+import requests
+import json
+import traceback
+import datetime 
+from sqlalchemy import create_engine
+
+def weather_to_db(text):
+    station = j
