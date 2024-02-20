@@ -39,6 +39,8 @@ def store_weather_data(cursor, data):
 
     # Extract relevant data
     temp = data['current']['temp']
+    main_event = data['current']['weather'][0]['main']
+    rain_hour_day = data['daily'][1]['rain'] #just daily hourly
     feels_like = data['current']['feels_like']
     humidity = data['current']['humidity']
     wind_speed = data['current']['wind_speed']
@@ -48,10 +50,10 @@ def store_weather_data(cursor, data):
     try:
         cursor.execute("\n"
                        "            INSERT INTO weather_data (\n"
-                       "                timestamp, temperature, feels_like, humidity, wind_speed, description\n"
+                       "                main_event, rain_hour_day, timestamp, temperature, feels_like, humidity, wind_speed, description\n"
                        "            )\n"
-                       "            VALUES (%s, %s, %s, %s, %s, %s)\n"
-                       "        ", (current_time, temp, feels_like, humidity, wind_speed, description))
+                       "            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)\n"
+                       "        ", (main_event, rain_hour_day, current_time,  temp , feels_like, humidity, wind_speed, description))
         cnx.commit()
         print("Weather data inserted successfully")
     except mysql.connector.Error as err:

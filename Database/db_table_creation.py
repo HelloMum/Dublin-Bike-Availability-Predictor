@@ -75,10 +75,13 @@ def tables_setup(cursor):
     print("Checking that tables exist...")
 
     # Check for static setup
+
     static_table_query = ("CREATE TABLE IF NOT EXISTS weather_data (\n"
                           "    id INT AUTO_INCREMENT PRIMARY KEY,\n"
                           "    timestamp DATETIME,\n"
                           "    temperature FLOAT,\n"
+                          "    main_event VARCHAR(255),\n"
+                          "    rain_hour_day FLOAT,\n"
                           "    feels_like FLOAT,\n"
                           "    humidity INT,\n"
                           "    wind_speed FLOAT,\n"
