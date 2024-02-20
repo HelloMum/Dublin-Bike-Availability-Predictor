@@ -12,9 +12,9 @@ weather_api_url = f'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lo
 
 # Connection to the database
 cnx = mysql.connector.connect(
-    user='root',
-    password='kZhzE5GvxLTHaeKQF6VB',
-    host='127.0.0.1',
+    user='admin2',
+    password='B!kes2JMT',
+    host='bikes-database-group2.c7yki6c8g16a.eu-west-1.rds.amazonaws.com',
     database='Bikes'
 )
 
