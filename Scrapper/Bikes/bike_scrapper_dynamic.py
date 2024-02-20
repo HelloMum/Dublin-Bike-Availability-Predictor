@@ -26,7 +26,7 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 # Also log to a file, useful for the cron routine
-file_handler = logging.FileHandler("cpy-errors.log")
+file_handler = logging.FileHandler("weather-dynamic-errors.log")
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
