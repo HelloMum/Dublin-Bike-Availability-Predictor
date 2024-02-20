@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a84ec950-0c1d-4ebd-82ca-8f833d8e0ceb" name="Changes" comment="updated work space" />
+    <list default="true" id="a84ec950-0c1d-4ebd-82ca-8f833d8e0ceb" name="Changes" comment="Directly more database related now,">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Database/.gitignore" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -48,12 +51,22 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;Python.bike_dynamic.executor&quot;: &quot;Run&quot;,
+    &quot;Python.bike_scraper.executor&quot;: &quot;Run&quot;,
+    &quot;Python.bike_scrapper_dynamic.executor&quot;: &quot;Run&quot;,
+    &quot;Python.bike_scrapper_static.executor&quot;: &quot;Run&quot;,
+    &quot;Python.bike_table_creation.executor&quot;: &quot;Run&quot;,
+    &quot;Python.db_table_creation.executor&quot;: &quot;Run&quot;,
     &quot;Python.scraper.executor&quot;: &quot;Coverage&quot;,
+    &quot;Python.scrapper_local.executor&quot;: &quot;Run&quot;,
+    &quot;Python.table_creation.executor&quot;: &quot;Run&quot;,
+    &quot;Python.weather_api_test.executor&quot;: &quot;Run&quot;,
+    &quot;Python.weather_report_actual.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/hp/IdeaProjects/Branch-Bikes-COMP30830&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/hp/IdeaProjects/Branch-Bikes-COMP30830/Scrapper/Bikes&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -66,9 +79,44 @@
   }
 }</component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Scrapper/Bikes" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Instance" />
+      <recent name="$PROJECT_DIR$/Database" />
       <recent name="$PROJECT_DIR$/Scrapper" />
     </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="bike_scraper" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Bikes-COMP30830" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Scrapper/Bikes" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Scrapper/Bikes/bike_scraper.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.bike_scraper" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -91,7 +139,14 @@
       <workItem from="1707992561068" duration="9000" />
       <workItem from="1707992580267" duration="1882000" />
       <workItem from="1707998786161" duration="14000" />
-      <workItem from="1707998809838" duration="2522000" />
+      <workItem from="1707998809838" duration="3951000" />
+      <workItem from="1708006227804" duration="43000" />
+      <workItem from="1708180794826" duration="126000" />
+      <workItem from="1708186479596" duration="193000" />
+      <workItem from="1708186680921" duration="696000" />
+      <workItem from="1708259360693" duration="2034000" />
+      <workItem from="1708336721021" duration="2370000" />
+      <workItem from="1708340715284" duration="37238000" />
     </task>
     <task id="LOCAL-00001" summary="The crontab should be defined in the instance, the program will run once now">
       <option name="closed" value="true" />
@@ -149,7 +204,127 @@
       <option name="project" value="LOCAL" />
       <updated>1708001318059</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Updated cron naming">
+      <option name="closed" value="true" />
+      <created>1708001435634</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1708001435634</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Checks for dynamic changes">
+      <option name="closed" value="true" />
+      <created>1708366679946</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1708366679946</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Checks for dynamic changes and updates the DB">
+      <option name="closed" value="true" />
+      <created>1708372936832</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1708372936832</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Setups changes and updates the DB, expects DB ('Bikes')">
+      <option name="closed" value="true" />
+      <created>1708372958854</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1708372958854</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Update new naming">
+      <option name="closed" value="true" />
+      <created>1708375380151</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1708375380151</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Deleted bad comment">
+      <option name="closed" value="true" />
+      <created>1708375406798</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1708375406798</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Forked from dynamic, implemented time to debug">
+      <option name="closed" value="true" />
+      <created>1708375444731</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1708375444731</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Implemented time to debug static too">
+      <option name="closed" value="true" />
+      <created>1708375465404</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1708375465404</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Corrected the naming on arguments">
+      <option name="closed" value="true" />
+      <created>1708388625053</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1708388625053</updated>
+    </task>
+    <task id="LOCAL-00017" summary="Log now shows where is based on">
+      <option name="closed" value="true" />
+      <created>1708388652687</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1708388652687</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Now table configuration will work for weather and bikes">
+      <option name="closed" value="true" />
+      <created>1708388701051</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1708388701051</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Weather report following the same structure as the others">
+      <option name="closed" value="true" />
+      <created>1708388725379</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1708388725379</updated>
+    </task>
+    <task id="LOCAL-00020" summary="Deploy basic setup on EC2 (Kinda)">
+      <option name="closed" value="true" />
+      <created>1708390898139</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1708390898139</updated>
+    </task>
+    <task id="LOCAL-00021" summary="Part of the setup of the server">
+      <option name="closed" value="true" />
+      <created>1708391447474</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1708391447474</updated>
+    </task>
+    <task id="LOCAL-00022" summary="Directly more database related now,">
+      <option name="closed" value="true" />
+      <created>1708391492418</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1708391492418</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -175,9 +350,34 @@
     <MESSAGE value="Configure the cron routine for weather scrapper" />
     <MESSAGE value="Not necessary anymore" />
     <MESSAGE value="updated work space" />
-    <option name="LAST_COMMIT_MESSAGE" value="updated work space" />
+    <MESSAGE value="Updated cron naming" />
+    <MESSAGE value="Checks for dynamic changes" />
+    <MESSAGE value="Checks for dynamic changes and updates the DB" />
+    <MESSAGE value="Setups changes and updates the DB, expects DB ('Bikes')" />
+    <MESSAGE value="Update new naming" />
+    <MESSAGE value="Deleted bad comment" />
+    <MESSAGE value="Forked from dynamic, implemented time to debug" />
+    <MESSAGE value="Implemented time to debug static too" />
+    <MESSAGE value="Corrected the naming on arguments" />
+    <MESSAGE value="Log now shows where is based on" />
+    <MESSAGE value="Now table configuration will work for weather and bikes" />
+    <MESSAGE value="Weather report following the same structure as the others" />
+    <MESSAGE value="Deploy basic setup on EC2 (Kinda)" />
+    <MESSAGE value="Part of the setup of the server" />
+    <MESSAGE value="Directly more database related now," />
+    <option name="LAST_COMMIT_MESSAGE" value="Directly more database related now," />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/Branch_Bikes_COMP30830$bike_scraper.coverage" NAME="bike_scraper Coverage Results" MODIFIED="1708371210097" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Scrapper/Bikes" />
+    <SUITE FILE_PATH="coverage/Branch_Bikes_COMP30830$db_table_creation.coverage" NAME="db_table_creation Coverage Results" MODIFIED="1708384525918" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Scrapper" />
+    <SUITE FILE_PATH="coverage/Branch_Bikes_COMP30830$bike_scrapper_dynamic.coverage" NAME="bike_scrapper_dynamic Coverage Results" MODIFIED="1708391153478" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Scrapper/Bikes" />
+    <SUITE FILE_PATH="coverage/Branch_Bikes_COMP30830$table_creation.coverage" NAME="table_creation Coverage Results" MODIFIED="1708361296366" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Scrapper/Bikes" />
+    <SUITE FILE_PATH="coverage/Branch_Bikes_COMP30830$weather_report_actual.coverage" NAME="weather_report_actual Coverage Results" MODIFIED="1708384740079" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Scrapper/Weather" />
+    <SUITE FILE_PATH="coverage/Branch_Bikes_COMP30830$bike_dynamic.coverage" NAME="bike_dynamic Coverage Results" MODIFIED="1708366549973" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Scrapper/Bikes" />
+    <SUITE FILE_PATH="coverage/Branch_Bikes_COMP30830$scrapper_local.coverage" NAME="scrapper_local Coverage Results" MODIFIED="1708366375811" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Scrapper/Bikes" />
     <SUITE FILE_PATH="coverage/Branch_Bikes_COMP30830$scraper.coverage" NAME="scraper Coverage Results" MODIFIED="1707992604920" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Scrapper/Bikes" />
+    <SUITE FILE_PATH="coverage/Branch_Bikes_COMP30830$bike_table_creation.coverage" NAME="bike_table_creation Coverage Results" MODIFIED="1708381063221" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Scrapper/Bikes" />
+    <SUITE FILE_PATH="coverage/Branch_Bikes_COMP30830$bike_scrapper_static.coverage" NAME="bike_scrapper_static Coverage Results" MODIFIED="1708391159027" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Scrapper/Bikes" />
+    <SUITE FILE_PATH="coverage/Branch_Bikes_COMP30830$weather_api_test.coverage" NAME="weather_api_test Coverage Results" MODIFIED="1708382196879" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Scrapper/Weather" />
   </component>
 </project>
