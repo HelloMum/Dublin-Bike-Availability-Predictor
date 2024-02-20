@@ -1,4 +1,4 @@
-# This program creates the setup base in the database, expects Bikes database
+# This program creates the setup base in the database, expects 'Bikes' database
 
 import mysql.connector
 
@@ -66,11 +66,32 @@ def tables_setup(cursor):
     try:
         cursor.execute(static_table_query)
         cnx.commit()
-        print("Dynamic database already exists")
+        print("Data base not configured, creating new table bike_dynamic...")
     except mysql.connector.Error as err:
         print(err.msg)
     else:
-        print("Data base not configured, creating new table bike_dynamic...")
+        print("Error on static table...")
+
+    print("Checking that tables exist...")
+
+    # Check for static setup
+    static_table_query = ("CREATE TABLE IF NOT EXISTS weather_data (\n"
+                          "    id INT AUTO_INCREMENT PRIMARY KEY,\n"
+                          "    timestamp DATETIME,\n"
+                          "    temperature FLOAT,\n"
+                          "    feels_like FLOAT,\n"
+                          "    humidity INT,\n"
+                          "    wind_speed FLOAT,\n"
+                          "    description VARCHAR(255)\n"
+                          ");")
+    try:
+        cursor.execute(static_table_query)
+        cnx.commit()
+        print("Weather database created successfully")
+    except mysql.connector.Error as err:
+        print(err.msg)
+    else:
+        print("Error on weather table. Already exist?")
 
     print("Checking that tables exist...")
 
