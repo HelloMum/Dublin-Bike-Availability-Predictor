@@ -4,7 +4,7 @@ import logging
 from datetime import datetime, timezone
 import sys
 
-API_key = 'acdd67e7c31cde91a7b39ce7b279d504'
+API_key = 'b1aedb14183d55850347826bc9afe2bb'
 # Coordinates of Dublin 53.3498° N, 6.2603° W
 lat = '53.3498'
 lon = '6.2603'
