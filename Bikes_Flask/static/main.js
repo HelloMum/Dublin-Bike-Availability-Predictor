@@ -15,4 +15,20 @@ function initMap() {
             title: station.name
         });
     }
+    // Autocomplete for user location input
+    var input = document.getElementById('user-location');
+    var autocomplete = new google.maps.places.Autocomplete(input);
 }
+
+function updateTime() {
+    document.getElementById('current-time').textContent = new Date().toLocaleTimeString();
+}
+setInterval(updateTime, 1000);
+
+document.getElementById('left-sidebar').addEventListener('click', function() {
+    this.style.display = this.style.display === 'none' ? '' : 'none';
+});
+
+document.getElementById('right-sidebar').addEventListener('click', function() {
+    this.style.display = this.style.display === 'none' ? '' : 'none';
+});

@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify
 from flaskext.mysql import MySQL
 import config
 
@@ -40,6 +40,30 @@ def index():
         
     # Render the map.html template, passing the stations list and the Google Maps API Key
     return render_template('index.html', stations = stations, MAPS_APIKEY=app.config["MAPS_APIKEY"])
+
+@app.route("/weather")
+def weather():
+    weather_data = {}
+    try:    
+        cursor = mysql.connect().cursor()
+        cursor.execute("SELECT * FROM weather_data ORDER BY timestamp DESC LIMIT 1")
+        row = cursor.fetchone()
+        if row:
+            weather_data = {
+                'main_event': row[0],
+                'rain_hour_day': row[1],
+                'timestamp': row[2],
+                'temperature': row[3],
+                'feels_like': row[4],
+                'humidity': row[5],
+                'wind_speed': row[6],
+                'description': row[7]
+            }
+        cursor.close()
+    except Exception as e:
+        print(f"Error fetching data from database: {str(e)}")
+        
+    return jsonify(weather_data)
 
 if __name__ == "__main__":
     app.run(debug=True)

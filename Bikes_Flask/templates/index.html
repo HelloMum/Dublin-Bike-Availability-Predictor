@@ -3,7 +3,7 @@
 <head> 
     <title>Bike Stations Map</title> 
     <!-- Load the Google Maps JavaScript API. initMap is will execute when the API has loaded. -->
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key={{MAPS_APIKEY}}&callback=initMap"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key={{MAPS_APIKEY}}&libraries=places&callback=initMap"></script>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
     <script src="{{ url_for('static', filename='main.js') }}"></script>
 
@@ -15,8 +15,18 @@
 </head>
 
 <body> 
+    <div id="left-sidebar" class="sidebar">
+        <div id="current-time"></div>
+        <input type="text" id="user-location" placeholder="Enter your location: ">
+        <select id="nearest-stations">
+            <!-- Nearest station options will be populated dynamically -->
+        </select>
+    <div id="right-sidebar" class="sidebar">
+        <button id="toggle-right-sidebar">Toggle Right Sidebar</button>
+        <!-- Weather data will be populated dynamically -->
+        <div id="weather-data">Loading weather data...</div>
+    </div>
 
-    <h1>Bike Stations</h1> 
 
     <div id="map"></div> <!-- Container for the Google Map. -->
 
