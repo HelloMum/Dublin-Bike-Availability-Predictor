@@ -9,7 +9,7 @@ API_key = 'b1aedb14183d55850347826bc9afe2bb'
 lat = '53.3498'
 lon = '6.2603'
 
-weather_api_url = f'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&appid={API_key}'
+weather_api_url = f'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&appid={API_key}&units=metric'
 
 # Connection to the database #sql username, pass, db = sql schema. host = RDS endpoint
 cnx = mysql.connector.connect(
