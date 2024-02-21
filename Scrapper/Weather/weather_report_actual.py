@@ -33,6 +33,14 @@ file_handler = logging.FileHandler("weather-errors.log")
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
+response = requests.get(weather_api_url)
+
+if response.status_code == 200:
+    weather_data = response.json()
+    cursor = cnx.cursor()
+    store_weather_data(cursor, weather_data)
+else:
+    print(f"Failed to fetch weather data. Status code: {response.status_code}")
 
 def store_weather_data(cursor, data):
     current_time = datetime.utcfromtimestamp(data['current']['dt']).strftime('%Y-%m-%d %H:%M:%S')
@@ -56,19 +64,10 @@ def store_weather_data(cursor, data):
                        "        ", (main_event, rain_hour_day, current_time,  temp , feels_like, humidity, wind_speed, description))
         cnx.commit()
         print("Weather data inserted successfully")
+        cursor.close()
     except mysql.connector.Error as err:
         print(err.msg)
         print("Error: Maybe duplicated?")
 
 
-response = requests.get(weather_api_url)
-
-if response.status_code == 200:
-    weather_data = response.json()
-    cursor = cnx.cursor()
-    store_weather_data(cursor, weather_data)
-else:
-    print(f"Failed to fetch weather data. Status code: {response.status_code}")
-
-cursor.close()
 cnx.close()
