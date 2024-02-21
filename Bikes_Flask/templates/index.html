@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html> 
+<head> 
+    <title>Bike Stations Map</title> 
+    <!-- Load the Google Maps JavaScript API. initMap is will execute when the API has loaded. -->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key={{MAPS_APIKEY}}&callback=initMap"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
+
+    <!-- Stations variable from the Flask context, converted to JSON. -->
+    <script>
+        var stations = {{ stations | tojson | safe }};
+    </script>
+
+</head>
+
+<body> 
+
+    <h1>Bike Stations</h1> 
+
+    <div id="map"></div> <!-- Container for the Google Map. -->
+
+    <main>
+    </main> 
+    <footer> 
+        <p>&copy; 2024 SWE</p>
+    </footer>
+
+</body>
+
+</html>
