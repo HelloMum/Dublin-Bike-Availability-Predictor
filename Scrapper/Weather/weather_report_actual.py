@@ -59,15 +59,15 @@ def store_weather_data(cursor, data):
                        (main_event, rain_hour_day, current_time, temp, feels_like, humidity, wind_speed, description))
         cnx.commit()
         print("Weather data inserted successfully")
-        cursor.close()
         cnx.close()
         sys.exit()
     except mysql.connector.Error as err:
         print(err.msg)
         print("Error: Maybe duplicated?")
-        cursor.close()
         cnx.close()
         sys.exit()
+    finally:
+        cursor.close()
 
 
 if response.status_code == 200:

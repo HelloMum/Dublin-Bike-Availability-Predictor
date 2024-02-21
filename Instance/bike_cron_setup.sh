@@ -7,9 +7,13 @@ sleep 5
 echo "This program will check if the cron entry for bike_api_test.py every 5 minutes in home folder, if it is not there it will create one"
 echo "Create CRON entry"
 
+#setup_cron.sh = file for running cron for the 2 below
 # The entry will be added with the normal python install. This should be running from miniconda once is setup
-new_entry01="*/5 * * * * /usr/bin/python3 /home/$USER/Bikes-COMP30830/bike_scrapper_dynamic.py"
-new_entry02="*/5 * * * * /usr/bin/python3 /home/$USER/Bikes-COMP30830/weather_report_actual.py"
+#new_entry01=
+*/5 * * * * /home/ubuntu/miniconda/envs/Bikes-COMP30830/bin/python3 /home/ubuntu/bike_scrapper_dynamic.py
+#new_entry02=
+*/5 * * * * /home/ubuntu/miniconda/envs/Bikes-COMP30830/bin/python3 /home/ubuntu/weather_report_actual.py
+
 
 # This will check to see if is already there
 if ! crontab -l | fgrep -q "$new_entry"; then
