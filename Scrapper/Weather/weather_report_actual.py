@@ -5,9 +5,9 @@ from datetime import datetime, timezone
 import sys
 
 API_key = 'b1aedb14183d55850347826bc9afe2bb'
-# Coordinates of Dublin 53.3498° N, 6.2603° W
+# Coordinates of Dublin 53.3498° N, 6.2603° W This is negative
 lat = '53.3498'
-lon = '6.2603'
+lon = '-6.2603'
 
 weather_api_url = f'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&appid={API_key}&units=metric'
 
@@ -66,8 +66,9 @@ def store_weather_data(cursor, data):
         print("Error: Maybe duplicated?")
         cnx.close()
         sys.exit()
-    finally:
-        cursor.close()
+    except:
+        cnx.close()
+        sys.exit()
 
 
 if response.status_code == 200:
