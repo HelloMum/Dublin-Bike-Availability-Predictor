@@ -1,4 +1,3 @@
-
 # Database configuration
 DATABASE_CONFIG = {
     'user': 'admin2',

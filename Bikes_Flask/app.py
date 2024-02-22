@@ -18,6 +18,42 @@ mysql.init_app(app)
 
 @app.route("/")
 def index():
+    """
+    Renders the index.html template with a list of stations and the Google Maps API Key.
+
+    Returns:
+        The rendered template.
+    """
+    stations = []
+    try:    
+        cursor = mysql.connect().cursor()
+        cursor.execute("SELECT * FROM stations_static")
+        rows = cursor.fetchall() 
+        for row in rows:
+            stations.append({
+                'number': row[0],
+                'name': row[1],
+                'latitude': row[2],
+                'longitude': row[3],
+                'title': row[1],
+                'status': row[8],
+                'bike_stands': row[7],
+                'available_bikes': row[6]
+            })
+        cursor.close()
+    except Exception as e:
+        print(f"Error fetching data from database: {str(e)}")
+        
+    return render_template('index.html', stations = stations, MAPS_APIKEY=app.config["MAPS_APIKEY"])
+
+@app.route("/stations_dynamic")
+def dynamic():
+    """
+    Renders the index.html template with a list of dynamic stations and the Google Maps API Key.
+
+    Returns:
+        The rendered template.
+    """
     stations = []
     try:    
         cursor = mysql.connect().cursor()
@@ -38,11 +74,17 @@ def index():
     except Exception as e:
         print(f"Error fetching data from database: {str(e)}")
         
-    # Render the map.html template, passing the stations list and the Google Maps API Key
     return render_template('index.html', stations = stations, MAPS_APIKEY=app.config["MAPS_APIKEY"])
+
 
 @app.route("/weather")
 def weather():
+    """
+    Retrieves the latest weather data from the database.
+
+    Returns:
+        The weather data in JSON format.
+    """
     weather_data = {}
     try:    
         cursor = mysql.connect().cursor()
