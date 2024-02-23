@@ -1,3 +1,6 @@
+# Program to fetch weather data and insert it onto the DB.
+# Find more information about the weather  codes in -> https://openweathermap.org/weather-conditions#Weather-Condition-Codes-2
+
 import mysql.connector
 import requests
 import logging
