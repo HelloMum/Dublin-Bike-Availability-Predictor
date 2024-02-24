@@ -26,8 +26,20 @@ window.addEventListener('load', function() {
     searchAutocomplete.bindTo('bounds', map);
     }
 
-    // hide the right sidebar
-    document.getElementById('rightSidebar').style.display = 'none';
+    // hide the right sidebar initially
+    document.getElementById('rightSidebar').style.transform = 'translateX(100%)';
+    document.getElementById('rightSidebar').style.transition = 'transform 0.5s ease-in-out';
+
+    // Right sidebar toggle button
+    document.getElementById('toggle-right-sidebar').addEventListener('click', function() {
+        var rightSidebar = document.getElementById('rightSidebar');
+        if (rightSidebar.style.transform === 'translateX(100%)') {
+            rightSidebar.style.transform = 'translateX(0)';
+        } else {
+            rightSidebar.style.transform = 'translateX(100%)';
+        }
+    });
+
 
     // Call the initMap function
     initMap();
@@ -53,15 +65,7 @@ setInterval(updateTime, 1000);
 document.getElementById('leftSidebar').style.display = '';
 document.getElementById('rightSidebar').style.display = 'none';
 
-// Right sidebar toggle button
-document.getElementById('toggle-right-sidebar').addEventListener('click', function() {
-    var rightSidebar = document.getElementById('rightSidebar');
-    if (rightSidebar.style.display === 'none') {
-        rightSidebar.style.display = 'block';
-    } else {
-        rightSidebar.style.display = 'none';
-    }
-});
+
 // ---------------------SIDEBAR FUNCTIONS END--------------------------------------------
 //=======================================================================================
 

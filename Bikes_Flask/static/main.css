@@ -30,16 +30,32 @@ html, body {
 }
 
 #rightSidebar {
-    position: relative;
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 25%;
+    background-color: rgb(0, 0, 0);
+    z-index: 1; 
 }
 
 #toggle-right-sidebar {
     position: absolute;
-    top: 0;
-    right: 0;
-    border: none;
-    background: none;
-    z-index: 2;
+    top: -20px; 
+    right: calc(2cm - 2px);
+    transform: translate(0, 50%);
+    border: 2px solid gold;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.8); 
+    z-index: 5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#toggle-right-sidebar img {
+    height: 60px;
+    width: auto;
 }
 /*=================================================================================*/
 /*---------------------------------- SIDEBAR END---------------------------------- */
