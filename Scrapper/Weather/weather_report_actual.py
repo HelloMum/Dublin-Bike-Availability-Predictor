@@ -59,7 +59,7 @@ def store_weather_data(cursor, data):
         main_event = "Not defined"
 
     try:
-        rain_hour_day = data['hourly'][0]['rain']  # Hourly rain expected
+        rain_hour_day = data['hourly'][0]['rain']['1h']  # Hourly rain expected
     except KeyError:  # If in the hour there is 0 rain it won't show on the JSON
         print("No hourly rain, skipping")
         logging.debug("No hourly rain, skipping")
