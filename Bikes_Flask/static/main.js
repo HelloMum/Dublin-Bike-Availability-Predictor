@@ -53,6 +53,16 @@ window.addEventListener('load', function() {
         }
     });
 
+    fetch('/stations_dynamic')
+        .then(response => response.json())
+        .then(data => {
+            // Process bike data and add to bike div
+            // This is just an example, replace with your actual code
+            var bikeInfo = document.createElement('p');
+            bikeInfo.textContent = 'Bike Info: ' + JSON.stringify(data);
+            document.getElementById('bike-data').appendChild(bikeInfo);
+        })
+        .catch(error => console.error('Error:', error));
 
     //=======================================================================================
     // ---------------------WEATHER FUNCTION ------------------------------------------------
@@ -77,14 +87,13 @@ window.addEventListener('load', function() {
                 weatherDiv.appendChild(description);
 
                 // Add the weather div to the right sidebar
-                var rightSidebar = document.getElementById('rightSidebar');
+                var rightSidebar = document.getElementById('weather-data');
                 rightSidebar.appendChild(weatherDiv);
             })
             .catch(error => console.error('Error:', error));
     //=======================================================================================
     // ---------------------WEATHER FUNCTION ------------------------------------------------
 });
-
 
 // ---------------------ONLOAD FUNCTIONS END---------------------------------------------
 //=======================================================================================
@@ -103,10 +112,6 @@ setInterval(updateTime, 1000);
 
 //=======================================================================================
 // ---------------------SIDEBAR FUNCTIONS -----------------------------------------------
-// Set the initial display of the sidebars left = show right = hidden
-document.getElementById('leftSidebar').style.display = '';
-document.getElementById('rightSidebar').style.display = 'none';
-
 
 // ---------------------SIDEBAR FUNCTIONS END--------------------------------------------
 //=======================================================================================
