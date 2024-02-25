@@ -68,8 +68,8 @@ def store_weather_data(cursor, data):
     try:  # I have not seen these not been present but I will add them just in case
         feels_like = data['current']['feels_like']
     except KeyError:  # If in the hour there is 0 rain it won't show on the JSON
-        print("No hourly rain, skipping")
-        logging.debug("No hourly rain, skipping")
+        print("No feels like, skipping")
+        logging.debug("No feels like, skipping")
         feels_like = 0
 
     try:
@@ -82,8 +82,8 @@ def store_weather_data(cursor, data):
     try:
         wind_speed = data['current']['wind_speed']
     except KeyError:  # If in the hour there is 0 rain it won't show on the JSON
-        print("No wind_speed, skipping")
-        logging.debug("No wind_speed, skipping")
+        print("No wind speed, skipping")
+        logging.debug("No wind speed, skipping")
         wind_speed = 0
 
     try:
