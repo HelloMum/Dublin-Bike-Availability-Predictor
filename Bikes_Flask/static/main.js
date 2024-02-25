@@ -1,32 +1,45 @@
-//=======================================================================================
-//  ---------------------ONLOAD FUNCTIONS -----------------------------------------------
 window.addEventListener('load', function() {
+    var map; 
+
     function initMap() {
         var dublin = { lat: 53.3498, lng: -6.2603 };
-        var map = new google.maps.Map(document.getElementById('map'), {
+        map = new google.maps.Map(document.getElementById('map'), {
             zoom: 13,
             center: dublin
         });
 
-        // Markers on the map for each station
-        for (var i = 0; i < stations.length; i++) {
-            var station = stations[i];
-            var marker = new google.maps.Marker({
-                position: { lat: station.latitude, lng: station.longitude },
-                map: map,
-                title: station.name
-            });
-        }
+        fetch('/stations_dynamic') 
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(function(station) {
+                    var marker = new google.maps.Marker({
+                        position: { lat: station.latitude, lng: station.longitude },
+                        map: map,
+                        //icon: we can add a custom icon here 
+                        title: `${station.name} - Available Bikes: ${station.available_bikes}`
+                    });
+                });
 
-    // Autocomplete for the search bar
-    var searchBarInput = document.getElementById('searchBarinput'); 
-    var searchAutocomplete = new google.maps.places.Autocomplete(searchBarInput);
-
-    // bound the autocomplete to prefer results within the map's viewport
-    searchAutocomplete.bindTo('bounds', map);
+            // SetupAutocomplete within initMap or after ensuring map is loaded
+            setupAutocomplete();
+            })            
+            .catch(error => console.error('Error loading station data:', error));
     }
 
-    // hide the right sidebar initially
+    // Call the initMap function
+    initMap();
+
+    // GMAPS autocomplete location 
+    function setupAutocomplete() {
+        var searchBarInput = document.getElementById('searchBarInput'); 
+        var searchAutocomplete = new google.maps.places.Autocomplete(searchBarInput);
+
+        // Bound the autocomplete to prefer results within the map's viewport
+        searchAutocomplete.bindTo('bounds', map);
+    }
+
+
+    // Hide the right sidebar initially
     document.getElementById('rightSidebar').style.transform = 'translateX(100%)';
     document.getElementById('rightSidebar').style.transition = 'transform 0.5s ease-in-out';
 
@@ -41,9 +54,38 @@ window.addEventListener('load', function() {
     });
 
 
-    // Call the initMap function
-    initMap();
+    //=======================================================================================
+    // ---------------------WEATHER FUNCTION ------------------------------------------------
+        fetch('/weather')
+            .then(response => response.json())
+            .then(data => {
+                // Div to hold the weather data
+                var weatherDiv = document.createElement('div');
+                weatherDiv.className = 'weather';
+
+                // CElements for each piece of weather data
+                var mainEvent = document.createElement('p');
+                mainEvent.textContent = 'Main Event: ' + data.main_event;
+                weatherDiv.appendChild(mainEvent);
+
+                var temperature = document.createElement('p');
+                temperature.textContent = 'Temperature: ' + data.temperature + '°C';
+                weatherDiv.appendChild(temperature);
+
+                var description = document.createElement('p');
+                description.textContent = 'Description: ' + data.description;
+                weatherDiv.appendChild(description);
+
+                // Add the weather div to the right sidebar
+                var rightSidebar = document.getElementById('rightSidebar');
+                rightSidebar.appendChild(weatherDiv);
+            })
+            .catch(error => console.error('Error:', error));
+    //=======================================================================================
+    // ---------------------WEATHER FUNCTION ------------------------------------------------
 });
+
+
 // ---------------------ONLOAD FUNCTIONS END---------------------------------------------
 //=======================================================================================
 
@@ -71,34 +113,3 @@ document.getElementById('rightSidebar').style.display = 'none';
 
 
 
-//=======================================================================================
-// ---------------------WEATHER FUNCTION ------------------------------------------------
-window.onload = function() {
-    fetch('/weather')
-        .then(response => response.json())
-        .then(data => {
-            // Div to hold the weather data
-            var weatherDiv = document.createElement('div');
-            weatherDiv.className = 'weather';
-
-            // CElements for each piece of weather data
-            var mainEvent = document.createElement('p');
-            mainEvent.textContent = 'Main Event: ' + data.main_event;
-            weatherDiv.appendChild(mainEvent);
-
-            var temperature = document.createElement('p');
-            temperature.textContent = 'Temperature: ' + data.temperature + '°C';
-            weatherDiv.appendChild(temperature);
-
-            var description = document.createElement('p');
-            description.textContent = 'Description: ' + data.description;
-            weatherDiv.appendChild(description);
-
-            // Add the weather div to the right sidebar
-            var rightSidebar = document.getElementById('rightSidebar');
-            rightSidebar.appendChild(weatherDiv);
-        })
-        .catch(error => console.error('Error:', error));
-};
-//=======================================================================================
-// ---------------------WEATHER FUNCTION ------------------------------------------------
