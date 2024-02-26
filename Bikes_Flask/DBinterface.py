@@ -10,12 +10,6 @@ class Link:
     def get_static_stations(self):
         return self.static_stations
 
-    def populate_map_all(self):
-        if self.get_static_all_stations():
-            return render_template('index.html', stations=self.static_stations, MAPS_APIKEY=app.config.get('MAPS_APIKEY'))
-
-        print("Error fetching the static stations")
-
     def get_dynamic_by_id(self, station_id):
         return
 
