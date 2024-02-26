@@ -12,20 +12,15 @@ session = Link(DBconfig)
 
 print("Starting app...")
 
-
 @app.route("/")
 def index():
-    session.populate_map_all()
     static_stations = session.get_static_stations()
-    print(static_stations)
     return render_template('index.html', stations=static_stations, MAPS_APIKEY=app.config["MAPS_APIKEY"])
-
 
 @app.route("/stations_dynamic")
 def get_static_stations():
     static_stations = session.get_static_stations()
     return render_template('index.html', stations=static_stations, MAPS_APIKEY=app.config["MAPS_APIKEY"])
-
 
 @app.route("/weather")
 def get_weather_now():
