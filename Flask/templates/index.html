@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html> 
+<head> 
+    <!-- Load the Google Maps JavaScript API. initMap is will execute when the API has loaded. -->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key={{MAPS_APIKEY}}&libraries=places&callback=initMap"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
+</head>
+
+<body> 
+    <div id="leftSidebar" class="sidebar">
+        <div id="searchBar">
+            <input type="text" id="searchBarInput" placeholder="Enter your location" />                
+            <img src="static/img/bike.png" alt="Bike_icon" />
+            <div class="dropdown-content"></div>
+            <!-- Left sidebar content will go here as a dropdown -->
+            <!-- Nearest station options will be populated dynamically -->
+        </div>
+    </div id = "current-time"></div>
+    <div id="map"><!-- Container for the Google Map. --></div>
+
+    <button id="toggle-right-sidebar">
+        <img src= "static/img/weatherIcon.png" alt="rightSidebar Image">
+    </button>
+    <div id="rightSidebar" class="sidebar"></div>         
+    
+    <!-- Weather data will be populated dynamically -->
+    <div id="weather-data"></div>
+
+    <!-- Stations variable from the Flask context, converted to JSON. -->
+    <script>
+        var stations = {{ stations | tojson | safe }};
+    </script>
+</body>
+</html>
