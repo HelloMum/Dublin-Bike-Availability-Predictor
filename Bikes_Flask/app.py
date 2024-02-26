@@ -14,12 +14,12 @@ print("Starting app...")
 
 @app.route("/")
 def index():
-    static_stations = session.get_static_stations()
+    static_stations = session.get_static_all_stations()
     return render_template('index.html', stations=static_stations, MAPS_APIKEY=app.config["MAPS_APIKEY"])
 
 @app.route("/stations_dynamic")
 def get_static_stations():
-    static_stations = session.get_static_stations()
+    static_stations = session.get_static_all_stations()
     return render_template('index.html', stations=static_stations, MAPS_APIKEY=app.config["MAPS_APIKEY"])
 
 @app.route("/weather")
