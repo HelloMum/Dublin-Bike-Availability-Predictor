@@ -8,25 +8,32 @@ app.config["MAPS_APIKEY"] = config.GOOGLE_MAPS_API_KEY
 
 # MySQL configurations
 DBconfig = config.CNX
-session = Link(DBconfig)
 
 print("Starting app...")
 
+
 @app.route("/")
 def index():
-    static_stations = session.get_static_all_stations()
-    return render_template('index.html', stations=static_stations, MAPS_APIKEY=app.config["MAPS_APIKEY"])
+    # Create an instance of Link
+    with Link(DBconfig) as link:
+        stations_static = link.get_static_all_stations()
+    return render_template('index.html', stations=stations_static, MAPS_APIKEY=app.config["MAPS_APIKEY"])
+
 
 @app.route("/stations_dynamic")
 def get_static_stations():
-    static_stations = session.get_static_all_stations()
-    return render_template('index.html', stations=static_stations, MAPS_APIKEY=app.config["MAPS_APIKEY"])
+    # Create an instance of Link
+    with Link(DBconfig) as link:
+        stations_static = link.get_static_all_stations()
+    return stations_static
+
 
 @app.route("/weather")
 def get_weather_now():
-    weather_data = session.get_weather()
-    return jsonify(weather_data)
+    with Link(DBconfig) as link:
+        weather_data = link.get_weather()
+    return weather_data
 
 
 if __name__ == "__main__":
-    app.run(debug=True, use_debugger=False, use_reloader=False)
+    app.run(debug=True, use_debugger=True, use_reloader=False)
