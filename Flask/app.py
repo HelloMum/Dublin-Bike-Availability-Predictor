@@ -20,8 +20,8 @@ with app.app_context():
     dynamic_last = database.get_dynamic_all_stations_last()
     static_all = database.get_static_all_stations_all()
     weather_last = database.get_weather_last()
-    # Checking there is no issues
-    # Checking there is no issues
+
+    # Checking there are no issues
     print(dynamic_last)
     print(static_all)
     print(weather_last)
