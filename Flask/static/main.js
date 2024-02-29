@@ -15,7 +15,10 @@ window.addEventListener('load', function() {
                     var marker = new google.maps.Marker({
                         position: { lat: station.latitude, lng: station.longitude },
                         map: map,
-                        //icon: we can add a custom icon here 
+                        icon: {
+                            url: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+                            strokeWeight: 1,
+                        },
                         title: `${station.name} - Available Bikes: ${station.available_bikes}`
                     });
                 });
