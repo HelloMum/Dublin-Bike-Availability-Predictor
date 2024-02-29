@@ -115,11 +115,13 @@ setInterval(updateTime, 1000);
 //=======================================================================================
 // ---------------------SIDEBAR FUNCTIONS -----------------------------------------------
 
+//TO BE FINISHED 
 // find closet station based on user input and populate the dropdown with results
 function findClosestStation() {
     var searchInput = document.getElementById('searchBarInput').value;
     var dropdownContent = document.querySelector('.dropdown-content');
     dropdownContent.innerHTML = '';
+    
     fetch(`/closest_station?search=${searchInput}`)
         .then(response => response.json())
         .then(data => {
