@@ -57,7 +57,6 @@ window.addEventListener('load', function() {
         .then(response => response.json())
         .then(data => {
             // Process bike data and add to bike div
-            // This is just an example, replace with your actual code
             var bikeInfo = document.createElement('p');
             bikeInfo.textContent = 'Bike Info: ' + JSON.stringify(data);
             document.getElementById('bike-data').appendChild(bikeInfo);
