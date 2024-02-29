@@ -115,6 +115,30 @@ setInterval(updateTime, 1000);
 //=======================================================================================
 // ---------------------SIDEBAR FUNCTIONS -----------------------------------------------
 
+// find closet station based on user input and populate the dropdown with results
+function findClosestStation() {
+    var searchInput = document.getElementById('searchBarInput').value;
+    var dropdownContent = document.querySelector('.dropdown-content');
+    dropdownContent.innerHTML = '';
+    fetch(`/closest_station?search=${searchInput}`)
+        .then(response => response.json())
+        .then(data => {
+            data.forEach(function(station) {
+                var stationDiv = document.createElement('div');
+                stationDiv.textContent = station.name;
+                stationDiv.addEventListener('click', function() {
+                    var stationName = stationDiv.textContent;
+                    var stationInfo = document.createElement('p');
+                    stationInfo.textContent = stationName;
+                    document.getElementById('station-info').innerHTML = '';
+                    document.getElementById('station-info').appendChild(stationInfo);
+                });
+                dropdownContent.appendChild(stationDiv);
+            });
+        })
+        .catch(error => console.error('Error:', error));
+
+}
 // ---------------------SIDEBAR FUNCTIONS END--------------------------------------------
 //=======================================================================================
 
