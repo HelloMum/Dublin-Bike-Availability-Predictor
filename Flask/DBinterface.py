@@ -30,27 +30,30 @@ class Link:
 
             # Print data for debugging
             print("dyna Stations (raw):", rows)
-            return dynamic_all_stations
+            formatted_dynamic = [dict(zip(self.cursor.column_names, row)) for row in rows]
+            return formatted_dynamic
 
     def get_static_all_stations_all(self):
         with self:
             self.cursor.execute(
                 'SELECT * FROM stations_static ORDER BY place_name')
             rows = self.cursor.fetchall()
-            static_all_stations = rows  # Store raw data, not jsonify(rows)
-
             # Print data for debugging
             print("Static Stations (raw):", rows)
-            return static_all_stations
+
+            formatted_static_all_stations = [dict(zip(self.cursor.column_names, row)) for row in rows]
+
+            return formatted_static_all_stations
 
     def get_weather_last(self):
         with self:
             self.cursor.execute("SELECT * FROM weather_data ORDER BY timestamp DESC LIMIT 1")
-            weather_data = self.cursor.fetchone()
+            rows = self.cursor.fetchall()
             # Print data for debugging
-            print(weather_data)
+            print(rows)
 
-        return weather_data  # Return raw data
+        formatted_weather = [dict(zip(self.cursor.column_names, row)) for row in rows]
+        return formatted_weather  # Return raw data
 
 
 
