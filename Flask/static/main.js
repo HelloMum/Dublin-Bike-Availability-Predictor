@@ -15,7 +15,10 @@ window.addEventListener('load', function() {
                     var marker = new google.maps.Marker({
                         position: { lat: station.latitude, lng: station.longitude },
                         map: map,
-                        //icon: we can add a custom icon here 
+                        icon: {
+                            url: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+                            strokeWeight: 1,
+                        },
                         title: `${station.name} - Available Bikes: ${station.available_bikes}`
                     });
                 });
@@ -57,7 +60,6 @@ window.addEventListener('load', function() {
         .then(response => response.json())
         .then(data => {
             // Process bike data and add to bike div
-            // This is just an example, replace with your actual code
             var bikeInfo = document.createElement('p');
             bikeInfo.textContent = 'Bike Info: ' + JSON.stringify(data);
             document.getElementById('bike-data').appendChild(bikeInfo);
@@ -113,6 +115,30 @@ setInterval(updateTime, 1000);
 //=======================================================================================
 // ---------------------SIDEBAR FUNCTIONS -----------------------------------------------
 
+// find closet station based on user input and populate the dropdown with results
+function findClosestStation() {
+    var searchInput = document.getElementById('searchBarInput').value;
+    var dropdownContent = document.querySelector('.dropdown-content');
+    dropdownContent.innerHTML = '';
+    fetch(`/closest_station?search=${searchInput}`)
+        .then(response => response.json())
+        .then(data => {
+            data.forEach(function(station) {
+                var stationDiv = document.createElement('div');
+                stationDiv.textContent = station.name;
+                stationDiv.addEventListener('click', function() {
+                    var stationName = stationDiv.textContent;
+                    var stationInfo = document.createElement('p');
+                    stationInfo.textContent = stationName;
+                    document.getElementById('station-info').innerHTML = '';
+                    document.getElementById('station-info').appendChild(stationInfo);
+                });
+                dropdownContent.appendChild(stationDiv);
+            });
+        })
+        .catch(error => console.error('Error:', error));
+
+}
 // ---------------------SIDEBAR FUNCTIONS END--------------------------------------------
 //=======================================================================================
 
