@@ -34,9 +34,12 @@ def index():
 
 
 @app.route("/stations_dynamic")
+def get_dynamic_stations():
+    return jsonify(dynamic_last)
+
+@app.route("/stations_static")
 def get_static_stations():
     return jsonify(static_all)
-
 
 @app.route("/weather")
 def get_weather_now():

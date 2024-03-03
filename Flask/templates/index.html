@@ -2,7 +2,7 @@
 <html> 
 <head> 
     <!-- Load the Google Maps JavaScript API. initMap is will execute when the API has loaded. -->
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key={{MAPS_APIKEY}}&libraries=places&callback=initMap"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?v=beta&key={{MAPS_APIKEY}}&libraries=places,marker&callback=initMap"></script>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
     <script src="{{ url_for('static', filename='main.js') }}"></script>
 <body> 
@@ -10,7 +10,7 @@
         <div id="searchBar">
             <input type="text" id="searchBarInput" placeholder="Enter your location" />                
             <img src="static/img/bike.png" alt="Bike_icon" />
-            <div class="dropdown-content"></div>
+            <div id = "dropdown-content"></div>
             <!-- Left sidebar content will go here as a dropdown -->
             <!-- Nearest station options will be populated dynamically -->
         </div>
