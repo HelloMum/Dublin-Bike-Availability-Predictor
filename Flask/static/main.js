@@ -175,8 +175,6 @@ function calculateAndDisplayRoute(directionsService, directionsRenderer, userLoc
 // ============================================================================================
 
 
-
-
 // =======================================================================================
 // ---------------------MAP INITIALISATION -----------------------------------------------
 window.initMap = async function initMap() {
@@ -248,7 +246,6 @@ function addMarkers(staticData, dynamicData, PinElement, AdvancedMarkerElement, 
                     `<div id="content">
                         <h3>${staticStation.place_address}</h3>
                         <p><b>Status:</b> ${dynamicStation.status}</p>       
-                        <p><b>Last Updated:</b> ${dynamicStation.api_update}</p>
                         <p><b>Available Bikes:</b> ${dynamicStation.available_bikes}</p>
                         <p><b>Available Bike Stands:</b> ${dynamicStation.available_bike_stands}</p>
                         <p><b>Total Bike Stands:</b> ${dynamicStation.bike_stands}</p>
@@ -305,10 +302,12 @@ window.addEventListener('load', function() {
             var weatherDiv = document.createElement('div');
             weatherDiv.className = 'weather';
 
-            // CElements for each piece of weather data
+            // Elements for each piece of weather data
             var mainEvent = document.createElement('p');
             mainEvent.textContent = 'Main Event: ' + data.main_event;
+            if (data.main_event !== NaN && data.main_event !== undefined) {
             weatherDiv.appendChild(mainEvent);
+            }
 
             var temperature = document.createElement('p');
             temperature.textContent = 'Temperature: ' + data.temperature + '°C';
