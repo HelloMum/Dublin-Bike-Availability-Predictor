@@ -16,6 +16,8 @@ function setupAutocomplete(map, staticData, dynamicData) {
     
     // Listen for the user's selection
     searchAutocomplete.addListener('place_changed', function() {
+    
+    directionsRenderer.setDirections({routes: []});
     let place = searchAutocomplete.getPlace();
     if (!place.geometry) {
         console.log("Returned place contains no geometry");
