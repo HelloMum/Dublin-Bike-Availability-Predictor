@@ -1,7 +1,4 @@
-let map;
-let directionsService;
-let directionsRenderer;
-
+let map, directionsService, directionsRenderer, locationMarker = null, lastKnownLocation = null;
 
 // =======================================================================================
 // #####################  FUNCTIONS FOR THE SEARCH BAR  ##################################
@@ -9,36 +6,30 @@ let directionsRenderer;
 
 // =======================================================================================
 // ---------------------AUTOCOMPLETE FUNCTION --------------------------------------------
-function setupAutocomplete(map, staticData, dynamicData) {
-    let searchBarInput = document.getElementById('searchBarInput');
-    let searchAutocomplete = new google.maps.places.Autocomplete(searchBarInput);
+const setupAutocomplete = (map, staticData, dynamicData, AdvancedMarkerElement, PinElement) => {
+    const searchAutocomplete = new google.maps.places.Autocomplete(document.getElementById('searchBarInput'));
     searchAutocomplete.bindTo('bounds', map);
-    
+
     // Listen for the user's selection
-    searchAutocomplete.addListener('place_changed', function() {
-    
-    directionsRenderer.setDirections({routes: []});
-    let place = searchAutocomplete.getPlace();
-    if (!place.geometry) {
-        console.log("Returned place contains no geometry");
-        return;
-    }
+    searchAutocomplete.addListener('place_changed', async () => {
+        const place = searchAutocomplete.getPlace();
+        if (!place.geometry) return console.log("Returned place contains no geometry");
+        
+        lastKnownLocation = place.geometry.location;
+        // Place the users marker on map and zoom in 
+        placeLocationMarker(lastKnownLocation, AdvancedMarkerElement, PinElement, map);
 
-    // Move the map to the selected place
-    map.panTo(place.geometry.location);
-    map.setZoom(15);
-
-    // Nearby Search for bike stations around the selected location
-    findNearestBikeStations(place.geometry.location.lat(), place.geometry.location.lng(), dynamicData, staticData, map);
-});
-}
+        await findNearestBikeStations(lastKnownLocation.lat(), lastKnownLocation.lng(), dynamicData, staticData, map, AdvancedMarkerElement);
+        directionsRenderer.setDirections({ routes: [] });
+    });
+};
 // ---------------------AUTOCOMPLETE FUNCTION END-----------------------------------------
 // =======================================================================================
 
 
 // =======================================================================================
 // ---------------------DISTANCE FUNCTIONS -----------------------------------------------
-//TODO: DECIDE IF WE WANT THIS FORMULA OR ANOTHER
+
 // Function to calculate the distance between two points using Haversine formula
 function calculateDistance(lat1, lon1, lat2, lon2) {
     const R = 6371; 
@@ -53,26 +44,22 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 }
 
 // Error checking lat nad lng
-function isValidLatLng(lat, lng) {
-    return typeof lat === 'number' && typeof lng === 'number' && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180;
-}
+const isValidLatLng = (lat, lng) => typeof lat === 'number' && typeof lng === 'number' && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180;
 
 // Function to find the nearest bike stations to a location
-function findNearestBikeStations(userLatitude, userLongitude, dynamicData, staticData, map) {
-    // Calculate straight line distances
-    let crowFliesDistances = staticData.map(station => ({
+const findNearestBikeStations = async (userLatitude, userLongitude, dynamicData, staticData, map, AdvancedMarkerElement) => {
+    const crowFliesDistances = staticData.map(station => ({
         ...station,
         crowFliesDistance: calculateDistance(userLatitude, userLongitude, station.place_latitude, station.place_longitude)
     }));
 
-    // Sort 
+    // Sort the stations by distance
     crowFliesDistances.sort((a, b) => a.crowFliesDistance - b.crowFliesDistance);
 
-    // Top 10 closest stations for Distance Matrix API
-    let closestByCrowFlies = crowFliesDistances.slice(0, 10);
-    let destinations = closestByCrowFlies.map(station => {
-        let latitude = parseFloat(station.place_latitude);
-        let longitude = parseFloat(station.place_longitude);
+    const closestByCrowFlies = crowFliesDistances.slice(0, 10);
+    const destinations = closestByCrowFlies.map(station => {
+        const latitude = parseFloat(station.place_latitude);
+        const longitude = parseFloat(station.place_longitude);
 
         if (!isValidLatLng(latitude, longitude)) {
             console.error('Invalid latitude and longitude for station:', station);
@@ -82,19 +69,18 @@ function findNearestBikeStations(userLatitude, userLongitude, dynamicData, stati
         return new google.maps.LatLng(latitude, longitude);
     }).filter(Boolean);
 
-    let service = new google.maps.DistanceMatrixService();
+    // Get the distance matrix
+    const service = new google.maps.DistanceMatrixService();
 
-    // Distance Matrix API to calculate walking distances
     service.getDistanceMatrix({
         origins: [new google.maps.LatLng(userLatitude, userLongitude)],
         destinations: destinations,
         travelMode: 'WALKING',
     }, (result, status) => {
         if (status === google.maps.DistanceMatrixStatus.OK) {
-            let distances = result.rows[0].elements;
-            let distanceData = closestByCrowFlies.map((station, index) => {
-                // Find dynamic data for each station
-                let dynamicStation = dynamicData.find(dynamic => dynamic.id === station.place_id);
+            const distances = result.rows[0].elements;
+            const distanceData = closestByCrowFlies.map((station, index) => {
+                const dynamicStation = dynamicData.find(dynamic => dynamic.id === station.place_id);
                 return {
                     ...station,
                     distance: distances[index].distance.text,
@@ -103,20 +89,15 @@ function findNearestBikeStations(userLatitude, userLongitude, dynamicData, stati
                     available_bike_stands: dynamicStation ? dynamicStation.available_bike_stands : 'N/A'
                 };
             });
-        
-            // Sort by walking distance
+            // Sort the stations by Matrix distance
             distanceData.sort((a, b) => a.distanceValue - b.distanceValue);
 
-            // Top 5 closest stations
-            let closestStations = distanceData.slice(0, 5);
-
-            // Populate the dropdown with the closest stations
-            let userLocation = new google.maps.LatLng(userLatitude, userLongitude);
-            populateDropdownWithStations(closestStations, userLocation, map);
+            const closestStations = distanceData.slice(0, 5);
+            const userLocation = new google.maps.LatLng(userLatitude, userLongitude);
+            populateDropdownWithStations(closestStations, userLocation, map, AdvancedMarkerElement);
         }
     });
-}
-
+};
 // ---------------------DISTANCE FUNCTIONS END-------------------------------------------
 // =======================================================================================
 
@@ -124,31 +105,25 @@ function findNearestBikeStations(userLatitude, userLongitude, dynamicData, stati
 // =======================================================================================
 // ---------------------SEARCHBAR LIST DROPDOWN ------------------------------------------
 // Function to populate the dropdown with the closest stations
-function populateDropdownWithStations(closestStations, userLocation, map) {
-    let dropdown = document.getElementById('dropdown-content');
-    dropdown.innerHTML = ''; 
-
+const populateDropdownWithStations = (closestStations, userLocation, map, AdvancedMarkerElement) => {
+    const dropdown = document.getElementById('dropdown-content');
+    dropdown.innerHTML = '';
+    const fragment = document.createDocumentFragment();
+    // For each station in the closest stations
     closestStations.forEach(station => {
-        let option = document.createElement('button'); 
-        option.innerHTML = `
-            <div class="station-info">
-                <span class="station-name"><b>${station.place_address}</b></span>
-                <span class="station-distance"><b>Distance:</b> ${station.distance}</span>
-                <span class="station-bikes"><b>Bikes:</b> ${station.available_bikes}</span>
-                <span class="station-bike-stands"><b>Stands:</b> ${station.available_bike_stands}</span>
-            </div>
-        `;
-        // Add event listener for clicking a station
-        option.addEventListener('click', () => {
-            console.log(`Station selected: ${station.place_name}`);
-            calculateAndDisplayRoute(directionsService, directionsRenderer, userLocation, station, map);
-        });
-        dropdown.appendChild(option);
+        const option = document.createElement('button');
+        option.innerHTML = `<div class="station-info">
+            <span class="station-name"><b>${station.place_address}</b></span>
+            <span class="station-distance"><b>Distance:</b> ${station.distance}</span>
+            <span class="station-bikes"><b>Bikes:</b> ${station.available_bikes}</span>
+            <span class="station-bike-stands"><b>Stands:</b> ${station.available_bike_stands}</span>
+        </div>`;
+        option.addEventListener('click', () => calculateAndDisplayRoute(directionsService, directionsRenderer, userLocation, station, map, AdvancedMarkerElement));
+        fragment.appendChild(option);
     });
 
-    // Make sure the directions are rendered on the map
-    directionsRenderer.setMap(map);
-}
+    dropdown.appendChild(fragment);
+};
 // ---------------------SEARCHBAR LIST DROPDOWN END--------------------------------------
 // =======================================================================================
 
@@ -156,22 +131,30 @@ function populateDropdownWithStations(closestStations, userLocation, map) {
 // =======================================================================================
 // ---------------------ROUTE FUNCTIONS --------------------------------------------------
 // Define the function to calculate and display the route
-function calculateAndDisplayRoute(directionsService, directionsRenderer, userLocation, station, map) {
-    directionsService.route({
-        origin: userLocation,
-        destination: new google.maps.LatLng(station.place_latitude, station.place_longitude),
-        travelMode: 'WALKING'
-    }, (response, status) => {
-        if (status === 'OK') {
-            directionsRenderer.setDirections(response);
-        } else {
-            window.alert('Directions request failed due to ' + status);
-        }
-    });
-}
+const calculateAndDisplayRoute = async (directionsService, directionsRenderer, userLocation, station, map) => {
+    try {
+        const response = await new Promise((resolve, reject) => {
+            directionsService.route({
+                origin: userLocation,
+                destination: new google.maps.LatLng(station.place_latitude, station.place_longitude),
+                travelMode: 'WALKING'
+            }, (result, status) => {
+                if (status === 'OK') {
+                    resolve(result);
+                } else {
+                    reject('Directions request failed due to ' + status);
+                }
+            });
+        });
+        directionsRenderer.setDirections(response);
+        directionsRenderer.setOptions({ preserveViewport: true });
+    } catch (error) {
+        console.error(error);
+        window.alert(error);
+    }
+};
 // ---------------------ROUTE FUNCTIONS END----------------------------------------------
 // =======================================================================================
-
 
 // #####################  FUNCTIONS FOR THE SEARCH BAR  #######################################
 // ============================================================================================
@@ -179,179 +162,226 @@ function calculateAndDisplayRoute(directionsService, directionsRenderer, userLoc
 
 // =======================================================================================
 // ---------------------MAP INITIALISATION -----------------------------------------------
-window.initMap = async function initMap() {
+window.initMap = async () => {
     try {
         const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker");
-        let dublin = { lat: 53.3498, lng: -6.2603 };
+        const dublin = { lat: 53.346578, lng: -6.3 };
 
-        const map = new google.maps.Map(document.getElementById('map'), {
+        map = new google.maps.Map(document.getElementById('map'), {
             zoom: 13,
             center: dublin,
             mapId: 'BIKES_MAP',
         });
 
-        // Directions service and renderer
         directionsService = new google.maps.DirectionsService();
-        directionsRenderer = new google.maps.DirectionsRenderer();
-        directionsRenderer.setMap(map);
+        directionsRenderer = new google.maps.DirectionsRenderer({
+            map: map,
+            provideRouteAlternatives: true,
+            suppressMarkers: true,
+            polylineOptions: {
+                strokeColor: 'blue',
+                strokeOpacity: 0.7,
+                strokeWeight: 5
+            }
+        });
 
-        // Fetch static data
         const staticResponse = await fetch('/stations_static');
-        const staticData = await staticResponse.json(); 
-        // Fetch dynamic data
+        const staticData = await staticResponse.json();
         const dynamicResponse = await fetch('/stations_dynamic');
         const dynamicData = await dynamicResponse.json();
 
-        // Set up the autocomplete and Map markers
-        setupAutocomplete(map, staticData, dynamicData);
+        setupAutocomplete(map, staticData, dynamicData, AdvancedMarkerElement, PinElement);
         addMarkers(staticData, dynamicData, PinElement, AdvancedMarkerElement, map);
+
+        map.addListener('click', (e) => {
+            placeLocationMarker(e.latLng, AdvancedMarkerElement, PinElement, map);
+            updateSearchBarAndFindBikeStations(e.latLng, staticData, dynamicData, map);
+        });
+
+        // TODO
+        document.getElementById('centerOnLocation').addEventListener('click', () => {
+            if (lastKnownLocation) {
+                map.setCenter(lastKnownLocation);
+                map.setZoom(20);
+            } else {
+                console.log('No known last location.');
+            }
+        });
     } catch (error) {
         console.error('Error initializing map:', error);
     }
-}
+};
 // ---------------------MAP INITIALISATION END-------------------------------------------
 //=======================================================================================
 
 
 // =======================================================================================
 // ---------------------MAP MARKER FUNCTIONS ---------------------------------------------
-function addMarkers(staticData, dynamicData, PinElement, AdvancedMarkerElement, map) {  
-        const infoWindow = new google.maps.InfoWindow();
-        // For each station in the static data
-        staticData.forEach(staticStation => {
+const placeLocationMarker = (lastKnownLocation, AdvancedMarkerElement, PinElement, map) => {
+    if (!locationMarker) {        
+        const userPinIcon = document.createElement('img');
+        userPinIcon.src = 'static/img/userIcon.png';
+        userPinIcon.id = 'userPinIcon';
+        const userPin = new PinElement({
+            background: 'blue',
+            borderColor: 'blue',
+            glyph: userPinIcon,
+            glyphColor: '#ffffff',
+            scale: 1
+        });
+        
 
-            // The corresponding station in the dynamic data
-            let dynamicStation = dynamicData.find(dynamic => dynamic.id === staticStation.place_id);
+        // Create a new marker and assign it to locationMarker
+        locationMarker = new AdvancedMarkerElement({
+            map: map,
+            position: lastKnownLocation,
+            content: userPin.element,
+            gmpClickable: true,
+            gmpDraggable: true,
+            title: "User Location Marker"
+        });
+    } else {
+        // Clear the directions and set the marker's position
+        directionsRenderer.setDirections({ routes: [] });
+        locationMarker.position = lastKnownLocation
+    }
+    map.setCenter(lastKnownLocation);
+    map.setZoom(15);
+};
 
-            // If a corresponding station is found
-            if (dynamicStation) {
-                let pin = new PinElement({
-                    background: '#ff0000',
-                    borderColor: '#000000',
-                    glyph: '',
-                    glyphColor: '#ffffff',
-                    scale: 1
+const updateSearchBarAndFindBikeStations = async (latLng, staticData, dynamicData, map) => {
+    const geocoder = new google.maps.Geocoder();
+    try {
+        const geocodeResult = await geocoder.geocode({ location: latLng });
+        const address = geocodeResult.results[0].formatted_address;
+        document.getElementById('searchBarInput').value = address;
+
+        findNearestBikeStations(latLng.lat(), latLng.lng(), dynamicData, staticData, map);
+    } catch (error) {
+        console.error('Geocoder failed due to: ' + error);
+    }
+};
+
+const intersectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add("drop");
+            intersectionObserver.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.1 }); 
+
+const addMarkers = (staticData, dynamicData, PinElement, AdvancedMarkerElement, map) => {
+    const infoWindow = new google.maps.InfoWindow();
+    staticData.forEach(staticStation => {
+        const dynamicStation = dynamicData.find(dynamic => dynamic.id === staticStation.place_id);
+        if (dynamicStation) {
+            const pin = new PinElement({
+                background: '#ff0000',
+                borderColor: '#000000',
+                glyph: '',
+                glyphColor: '#ffffff',
+                scale: 1
+            });
+
+            const markerElement = new AdvancedMarkerElement({
+                map: map,
+                position: new google.maps.LatLng(parseFloat(staticStation.place_latitude), parseFloat(staticStation.place_longitude)),
+                content: pin.element,
+                gmpClickable: true,
+                title: staticStation.place_name
+            });
+
+            if (markerElement.content) {
+                const content = markerElement.content;
+
+                content.style.opacity = "0"; 
+                content.classList.add("drop"); 
+
+                content.addEventListener("animationend", () => {
+                    content.classList.remove("drop");
+                    content.style.opacity = "1";
                 });
 
-                // Custom HTML element for each marker
-                let markerElement = new AdvancedMarkerElement({
-                    map: map,
-                    position: new google.maps.LatLng(parseFloat(staticStation.place_latitude), parseFloat(staticStation.place_longitude)),
-                    content: pin.element,
-                    gmpClickable: true,
-                    title: staticStation.place_name
-                });
+                // vary the animation start time across markers
+                const time = 1.5 + Math.random();
+                content.style.setProperty("--delay-time", `${time}s`);
 
-                // Click listener for each marker
-                markerElement.addListener('gmp-click', function() {
-                    const contentString = 
-                    `<div id="content">
+                // Observe the marker for when it enters the viewport
+                intersectionObserver.observe(content);
+            }
+
+            markerElement.addListener('gmp-click', () => {
+                const contentString = `
+                    <div id="content">
                         <h3>${staticStation.place_address}</h3>
-                        <p><b>Status:</b> ${dynamicStation.status}</p>       
+                        <p><b>Status:</b> ${dynamicStation.status}</p>
+                        <p><b>Last Updated:</b> ${dynamicStation.api_update}</p>
                         <p><b>Available Bikes:</b> ${dynamicStation.available_bikes}</p>
                         <p><b>Available Bike Stands:</b> ${dynamicStation.available_bike_stands}</p>
                         <p><b>Total Bike Stands:</b> ${dynamicStation.bike_stands}</p>
                     </div>`;
 
-                    infoWindow.setContent(contentString);
-                    infoWindow.setPosition(new google.maps.LatLng(staticStation.place_latitude, staticStation.place_longitude));
-                    infoWindow.open(map);
-                });
-            }
-        });
-}
+                infoWindow.setContent(contentString);
+                infoWindow.setPosition(new google.maps.LatLng(staticStation.place_latitude, staticStation.place_longitude));
+                infoWindow.open(map);
+            });
+        }
+    });
+};
 // ---------------------MAP MARKER FUNCTIONS END-----------------------------------------
 //=======================================================================================
 
 
 //###########################################################################################
 // ---------------------ONLOAD FUNCTIONS ----------------------------------------------------
-// Make sure the map and sidebars are loaded before running the following code
-window.addEventListener('load', function() {
+// Make sure the map and sidebars are loaded before running
+window.addEventListener('load', () => {
     initMap();
 
+    // Initialize right sidebar's initial state
     document.getElementById('rightSidebar').style.transform = 'translateX(100%)';
     document.getElementById('rightSidebar').style.transition = 'transform 0.5s ease-in-out';
 
-    // Right sidebar toggle button
-    document.getElementById('toggle-right-sidebar').addEventListener('click', function() {
-        var rightSidebar = document.getElementById('rightSidebar');
-        if (rightSidebar.style.transform === 'translateX(100%)') {
-            rightSidebar.style.transform = 'translateX(0)';
-        } else {
-            rightSidebar.style.transform = 'translateX(100%)';
-        }
+    // Toggle right sidebar on button click
+    document.getElementById('toggle-right-sidebar').addEventListener('click', () => {
+        const rightSidebar = document.getElementById('rightSidebar');
+        rightSidebar.style.transform = rightSidebar.style.transform === 'translateX(100%)' ? 'translateX(0)' : 'translateX(100%)';
     });
 
-    // Not sure if we need this but could be used for the stats 
+    // Fetch and display dynamic station data
     fetch('/stations_dynamic')
         .then(response => response.json())
         .then(data => {
-            // Process bike data and add to bike div
-            var bikeInfo = document.createElement('p');
-            bikeInfo.textContent = 'Bike Info: ' + JSON.stringify(data);
+            const bikeInfo = document.createElement('p');
+            bikeInfo.textContent = `Bike Info: ${JSON.stringify(data)}`;
             document.getElementById('bike-data').appendChild(bikeInfo);
         })
         .catch(error => console.error('Error:', error));
 
     //=======================================================================================
     // ---------------------WEATHER FUNCTION ------------------------------------------------
-    //TODO: FIX
+    // Fetch and display weather data
     fetch('/weather')
         .then(response => response.json())
         .then(data => {
-            // Div to hold the weather data
-            var weatherDiv = document.createElement('div');
-            weatherDiv.className = 'weather';
-
-            // Elements for each piece of weather data
-            var mainEvent = document.createElement('p');
-            mainEvent.textContent = 'Main Event: ' + data.main_event;
-            if (data.main_event !== NaN && data.main_event !== undefined) {
-            weatherDiv.appendChild(mainEvent);
-            }
-
-            var temperature = document.createElement('p');
-            temperature.textContent = 'Temperature: ' + data.temperature + '°C';
-            weatherDiv.appendChild(temperature);
-
-            var description = document.createElement('p');
-            description.textContent = 'Description: ' + data.description;
-            weatherDiv.appendChild(description);
-
-            // Add the weather div to the right sidebar
-            var rightSidebar = document.getElementById('weather-data');
-            rightSidebar.appendChild(weatherDiv);
+            const weatherInfo = document.createElement('p');
+            const weatherDetails = data[0];
+            weatherInfo.textContent =
+                `Weather: ${weatherDetails.description},\n
+            Tempature: ${weatherDetails.temperature}°C\n
+            Wind Speed: ${weatherDetails.wind_speed} km/h`;
+            document.getElementById('weather-data').appendChild(weatherInfo);
         })
         .catch(error => console.error('Error:', error));
 
-    //=======================================================================================
-    // ---------------------WEATHER FUNCTION ------------------------------------------------
+    // ---------------------WEATHER FUNCTION END ------------------------------------------------
+    //===========================================================================================
+
+    // Update time every second
+    const updateTime = () => {
+        document.getElementById('current-time').textContent = new Date().toLocaleTimeString();
+    };
+    setInterval(updateTime, 1000);
 });
-
-// ---------------------ONLOAD FUNCTIONS END-------------------------------------------------
-//###########################################################################################
-
-
-
-
-//=======================================================================================
-// ---------------------TIME FUNCTION ---------------------------------------------------
-function updateTime() {
-    document.getElementById('current-time').textContent = new Date().toLocaleTimeString();
-}
-setInterval(updateTime, 1000);
-
-// ---------------------TIME FUNCTION END------------------------------------------------
-//=======================================================================================
-
-
-//=======================================================================================
-// ---------------------SIDEBAR FUNCTIONS -----------------------------------------------
-
-
-// ---------------------SIDEBAR FUNCTIONS END--------------------------------------------
-//=======================================================================================
-
-
 

@@ -1,10 +1,10 @@
-html, body {
+html,
+body {
     height: 100%;
     margin: 0;
     padding: 0;
     position: relative;
 }
-
 
 /*=================================================================================*/
 /*---------------------------------- MAP ---------------------------------------- */
@@ -12,9 +12,45 @@ html, body {
     width: 100%;
     height: 100%;
     border: 1px solid #000;
+    z-index: 1;
 }
 
+/* https://developers.google.com/maps/documentation/javascript/examples/advanced-markers-animation#maps_advanced_markers_animation-css */
+@keyframes drop {
+    0% {
+        transform: translateY(-200px) scaleY(0.9);
+        opacity: 0;
+    }
+    5% {
+        opacity: 0.7;
+    }
+    50% {
+        transform: translateY(0px) scaleY(1);
+        opacity: 1;
+    }
+    65% {
+        transform: translateY(-17px) scaleY(0.9);
+        opacity: 1;
+    }
+    75% {
+        transform: translateY(-22px) scaleY(0.9);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(0px) scaleY(1);
+        opacity: 1;
+    }
+}
 
+.drop {
+    animation: drop 0.4s linear forwards var(--delay-time);
+}
+
+#userPinIcon {
+    height: 90%;
+    width: auto;
+    background-color: transparent;
+}
 /*=================================================================================*/
 /*---------------------------------- MAP END------------------------------------- */
 
@@ -26,9 +62,9 @@ html, body {
     top: 0;
     left: 0;
     height: 100%;
-    width: 20%;
-    background-color: transparent;
-    z-index: 1; 
+    background-color: rgba(255, 255, 255, 0.808);
+    width: 30%;
+    z-index: 4;
 }
 
 #rightSidebar {
@@ -36,19 +72,20 @@ html, body {
     top: 0;
     right: 0;
     height: 100%;
-    width: 25%;
-    background-color: rgb(255, 255, 255, 0.8); 
+    width: 20%;
+    background-color: rgb(255, 255, 255, 0.8);
+    z-index: 5;
 }
 
 #toggle-right-sidebar {
     position: absolute;
-    top: -20px; 
+    top: -20px;
     right: calc(2cm - 2px);
     transform: translate(0, 50%);
     border: 2px solid gold;
     border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.8); 
-    z-index: 5;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: 6;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -58,6 +95,7 @@ html, body {
     height: 60px;
     width: auto;
 }
+
 /*=================================================================================*/
 /*---------------------------------- SIDEBAR END---------------------------------- */
 
@@ -66,18 +104,18 @@ html, body {
 /*---------------------------------- SEARCHBAR ---------------------------------- */
 #searchBar {
     position: absolute;
-    top: 10%; 
-    left: 75%; 
-    transform: translateX(-50%); 
+    top: 8%;
+    left: 50%;
+    transform: translateX(-50%);
     width: 400px;
-    height: 40px; 
+    height: 40px;
     background-color: rgb(255, 255, 255);
-    border: 1px solid #cccccc; 
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3); 
-    border-radius: 3px; 
+    border: 1px solid #cccccc;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    border-radius: 3px;
     display: flex;
     align-items: center;
-    padding: 0 10px; 
+    padding: 0 10px;
 }
 
 #searchBar input[type="text"] {
@@ -86,32 +124,32 @@ html, body {
     height: 90%;
     width: 1%;
     margin-left: 10px;
-    font-size: 16px; 
+    font-size: 16px;
 }
 
 #searchBar button {
     background: none;
     border: none;
     cursor: pointer;
-    padding: 0; 
-    margin: 0; 
-    height: 40px; 
-    display: flex; 
+    padding: 0;
+    margin: 0;
+    height: 40px;
+    display: flex;
     align-items: center;
 }
 
 #searchBar img {
-    height: 30px; 
-    width: auto; 
+    height: 30px;
+    width: auto;
 }
 
 #dropdown-content {
     position: absolute;
-    top: calc(10% + 35px); 
-    left: calc(75% + 20% - 180px); 
-    width: 400px; 
-    transform: translateX(-50%); 
-    z-index: -1; 
+    top: calc(10% + 35px);
+    left: calc(75% + 20% - 180px);
+    width: 400px;
+    transform: translateX(-50%);
+    z-index: -1;
     background-color: rgb(255, 255, 255);
     border: 1px solid #797373ce;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
@@ -123,10 +161,10 @@ html, body {
     width: 100%;
     padding: 10px;
     border: none;
-    background-color: rgba(65, 63, 63, 0); 
+    background-color: rgba(65, 63, 63, 0);
     text-align: left;
     cursor: pointer;
-    margin-bottom: 5px; 
+    margin-bottom: 5px;
 }
 
 
@@ -139,14 +177,14 @@ html, body {
 /*---------------------------------- CURRENT TIME ------------------------------- */
 #current-time {
     position: fixed;
-    top: 5%; 
-    left: 50%; 
+    top: 5%;
+    left: 50%;
     transform: translate(-50%, -50%);
     z-index: 1000;
     background-color: rgb(255, 255, 255);
-    border: 1px solid #cccccc; 
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3); 
-    border-radius: 3px; 
+    border: 1px solid #cccccc;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    border-radius: 3px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -155,5 +193,6 @@ html, body {
     font-size: 16px;
     font-weight: bold;
 }
+
 /*---------------------------------- CURRENT TIME END------------------------------ */
 /*=================================================================================*/
