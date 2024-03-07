@@ -51,12 +51,14 @@ body {
     width: auto;
     background-color: transparent;
 }
-/*=================================================================================*/
+
 /*---------------------------------- MAP END------------------------------------- */
+/*===============================================================================*/
+
 
 
 /*=================================================================================*/
-/*---------------------------------- SIDEBAR ------------------------------------- */
+/*---------------------------------- LEFT SIDEBAR ------------------------------- */
 #leftSidebar {
     position: absolute;
     top: 0;
@@ -67,21 +69,57 @@ body {
     z-index: 4;
 }
 
+#weather-data {
+    position: absolute;
+    top: 0; 
+    padding: 0;
+    padding-left: 6px;
+    left: calc(20% + 10px); 
+    width: 80%; 
+    height: auto; 
+    background-color: rgba(255, 255, 255, 0.966);
+    z-index: 5;
+    font-family: Arial, sans-serif;
+    font-weight: 300;
+    font-size: smaller;
+    border-left: 1px solid #0000003d; 
+}
+
+#bike-data {
+    position: absolute;
+    top: 120px;
+    right: 10px; 
+    width: 80%; 
+    height: 100px; 
+    background-color: rgba(255, 255, 255, 0.808);
+    z-index: 5;
+    border: 1px solid #000;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+
+}
+/*---------------------------------- LEFT SIDEBAR END---------------------------- */
+/*===============================================================================*/
+
+
+
+/*=================================================================================*/
+/*---------------------------------- RIGHT SIDEBAR ------------------------------- */
 #rightSidebar {
     position: absolute;
     top: 0;
     right: 0;
     height: 100%;
     width: 20%;
-    background-color: rgb(255, 255, 255, 0.8);
+    background-color: rgb(255, 255, 255);
     z-index: 5;
 }
 
 #toggle-right-sidebar {
     position: absolute;
-    top: -20px;
+    top: 3%;
     right: calc(2cm - 2px);
-    transform: translate(0, 50%);
     border: 2px solid gold;
     border-radius: 50%;
     background-color: rgba(255, 255, 255, 0.8);
@@ -89,6 +127,20 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    transition: right 0.5s ease-in-out; 
+}
+
+#rightSidebar {
+    transform: translateX(100%);
+    transition: transform 0.5s ease-in-out; 
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 20%;
+    background-color: rgb(255, 255, 255);
+    z-index: 5;
+    box-shadow: -5px 0px 5px rgba(0, 0, 0, 0.192);
 }
 
 #toggle-right-sidebar img {
@@ -96,8 +148,18 @@ body {
     width: auto;
 }
 
-/*=================================================================================*/
-/*---------------------------------- SIDEBAR END---------------------------------- */
+#toggle-right-sidebar.small-button {
+    top: 3%;
+    width: 4px; 
+    height: 4px; 
+    transition: width 0.5s ease-in-out, height 0.5s ease-in-out, right 0.5s ease-in-out; 
+    background-color: rgba(255, 255, 255, 0.966);
+}
+
+
+/*---------------------------------- RIGHT SIDEBAR END--------------------------- */
+/*===============================================================================*/
+
 
 
 /*=================================================================================*/
@@ -145,29 +207,71 @@ body {
 
 #dropdown-content {
     position: absolute;
-    top: calc(10% + 35px);
-    left: calc(75% + 20% - 180px);
-    width: 400px;
+    top: calc(10% + 35px); 
+    left: 50%;
+    width: 420px; 
     transform: translateX(-50%);
-    z-index: -1;
-    background-color: rgb(255, 255, 255);
-    border: 1px solid #797373ce;
+    z-index: 1000; 
+    background-color: #fff;
+    border: 1px solid #ddd;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-    border-radius: 3px;
+    border-radius: 5px;
+    overflow: auto; 
 }
 
 #dropdown-content button {
-    display: block;
+    display: flex; 
+    align-items: center; 
     width: 100%;
-    padding: 10px;
-    border: none;
-    background-color: rgba(65, 63, 63, 0);
+    padding: 28px 16px; 
+    border-bottom: 1px solid #f0f0f0; 
+    background-color: #fff; 
     text-align: left;
     cursor: pointer;
-    margin-bottom: 5px;
+    transition: background-color 0.3s; 
+    position: relative; 
 }
 
+#dropdown-content button:last-child {
+    border-bottom: none; 
+}
 
+#dropdown-content button:hover {
+    background-color: #f9f9f9; 
+}
+
+.station-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%; 
+}
+
+.station-info > .icon {
+    margin-right: 10px; 
+}
+.station-info > span {
+    position: relative;
+    top: 10px; 
+    left: 3px; 
+    margin-left: 0; 
+}
+
+.station-name, .station-status, .station-distance, .station-bikes, .station-bike-stands {
+    display: flex;
+    align-items: center;
+    margin-right: 15px; 
+    flex-wrap: nowrap; 
+}
+
+.station-name {
+    font-weight: bold;
+    margin-right: 10px; 
+}
+
+.station-info .icon:not(:last-child) {
+    margin-right: 10px;
+}
 
 /*---------------------------------- SEARCHBAR END------------------------------- */
 /*===============================================================================*/

@@ -10,13 +10,11 @@ const setupAutocomplete = (map, staticData, dynamicData, AdvancedMarkerElement, 
     const searchAutocomplete = new google.maps.places.Autocomplete(document.getElementById('searchBarInput'));
     searchAutocomplete.bindTo('bounds', map);
 
-    // Listen for the user's selection
     searchAutocomplete.addListener('place_changed', async () => {
         const place = searchAutocomplete.getPlace();
         if (!place.geometry) return console.log("Returned place contains no geometry");
-        
+
         lastKnownLocation = place.geometry.location;
-        // Place the users marker on map and zoom in 
         placeLocationMarker(lastKnownLocation, AdvancedMarkerElement, PinElement, map);
 
         await findNearestBikeStations(lastKnownLocation.lat(), lastKnownLocation.lng(), dynamicData, staticData, map, AdvancedMarkerElement);
@@ -53,7 +51,6 @@ const findNearestBikeStations = async (userLatitude, userLongitude, dynamicData,
         crowFliesDistance: calculateDistance(userLatitude, userLongitude, station.place_latitude, station.place_longitude)
     }));
 
-    // Sort the stations by distance
     crowFliesDistances.sort((a, b) => a.crowFliesDistance - b.crowFliesDistance);
 
     const closestByCrowFlies = crowFliesDistances.slice(0, 10);
@@ -69,7 +66,6 @@ const findNearestBikeStations = async (userLatitude, userLongitude, dynamicData,
         return new google.maps.LatLng(latitude, longitude);
     }).filter(Boolean);
 
-    // Get the distance matrix
     const service = new google.maps.DistanceMatrixService();
 
     service.getDistanceMatrix({
@@ -83,13 +79,14 @@ const findNearestBikeStations = async (userLatitude, userLongitude, dynamicData,
                 const dynamicStation = dynamicData.find(dynamic => dynamic.id === station.place_id);
                 return {
                     ...station,
+                    status: dynamicStation ? dynamicStation.status : 'N/A',
                     distance: distances[index].distance.text,
                     distanceValue: distances[index].distance.value,
                     available_bikes: dynamicStation ? dynamicStation.available_bikes : 'N/A',
                     available_bike_stands: dynamicStation ? dynamicStation.available_bike_stands : 'N/A'
                 };
             });
-            // Sort the stations by Matrix distance
+
             distanceData.sort((a, b) => a.distanceValue - b.distanceValue);
 
             const closestStations = distanceData.slice(0, 5);
@@ -109,15 +106,26 @@ const populateDropdownWithStations = (closestStations, userLocation, map, Advanc
     const dropdown = document.getElementById('dropdown-content');
     dropdown.innerHTML = '';
     const fragment = document.createDocumentFragment();
-    // For each station in the closest stations
+
     closestStations.forEach(station => {
         const option = document.createElement('button');
-        option.innerHTML = `<div class="station-info">
-            <span class="station-name"><b>${station.place_address}</b></span>
-            <span class="station-distance"><b>Distance:</b> ${station.distance}</span>
-            <span class="station-bikes"><b>Bikes:</b> ${station.available_bikes}</span>
-            <span class="station-bike-stands"><b>Stands:</b> ${station.available_bike_stands}</span>
-        </div>`;
+        option.innerHTML = 
+        `<div class="station-info">
+        <span class="station-name"><b>${station.place_address}</b></span>
+
+        <img src="static/img/openclosedIcon.png" alt="Status" class="status-icon" />
+        <span class="station-status">${station.status}</span>
+
+        <img src="static/img/distanceIcon.png" alt="Distance" class="distance-icon" />
+        <span class="station-distance">${station.distance}</span>
+
+        <img src="static/img/bikeIcon.png" alt="Bikes" class="bikes-icon" />
+        <span class="station-bikes">${station.available_bikes}</span>
+
+        <img src="static/img/parkingIcon.png" alt="Stands" class="stands-icon" />
+        <span class="station-bike-stands">${station.available_bike_stands}</span>
+        </div>
+        `;
         option.addEventListener('click', () => calculateAndDisplayRoute(directionsService, directionsRenderer, userLocation, station, map, AdvancedMarkerElement));
         fragment.appendChild(option);
     });
@@ -230,8 +238,6 @@ const placeLocationMarker = (lastKnownLocation, AdvancedMarkerElement, PinElemen
             scale: 1
         });
         
-
-        // Create a new marker and assign it to locationMarker
         locationMarker = new AdvancedMarkerElement({
             map: map,
             position: lastKnownLocation,
@@ -241,7 +247,6 @@ const placeLocationMarker = (lastKnownLocation, AdvancedMarkerElement, PinElemen
             title: "User Location Marker"
         });
     } else {
-        // Clear the directions and set the marker's position
         directionsRenderer.setDirections({ routes: [] });
         locationMarker.position = lastKnownLocation
     }
@@ -293,17 +298,16 @@ const addMarkers = (staticData, dynamicData, PinElement, AdvancedMarkerElement, 
             });
 
             if (markerElement.content) {
-                const content = markerElement.content;
+                const content = markerElement.content; 
 
-                content.style.opacity = "0"; 
-                content.classList.add("drop"); 
+                content.style.opacity = "0";
+                content.classList.add("drop");
 
                 content.addEventListener("animationend", () => {
                     content.classList.remove("drop");
                     content.style.opacity = "1";
                 });
 
-                // vary the animation start time across markers
                 const time = 1.5 + Math.random();
                 content.style.setProperty("--delay-time", `${time}s`);
 
@@ -316,7 +320,6 @@ const addMarkers = (staticData, dynamicData, PinElement, AdvancedMarkerElement, 
                     <div id="content">
                         <h3>${staticStation.place_address}</h3>
                         <p><b>Status:</b> ${dynamicStation.status}</p>
-                        <p><b>Last Updated:</b> ${dynamicStation.api_update}</p>
                         <p><b>Available Bikes:</b> ${dynamicStation.available_bikes}</p>
                         <p><b>Available Bike Stands:</b> ${dynamicStation.available_bike_stands}</p>
                         <p><b>Total Bike Stands:</b> ${dynamicStation.bike_stands}</p>
@@ -337,27 +340,38 @@ const addMarkers = (staticData, dynamicData, PinElement, AdvancedMarkerElement, 
 // ---------------------ONLOAD FUNCTIONS ----------------------------------------------------
 // Make sure the map and sidebars are loaded before running
 window.addEventListener('load', () => {
-    initMap();
+    initMap();  
 
-    // Initialize right sidebar's initial state
-    document.getElementById('rightSidebar').style.transform = 'translateX(100%)';
-    document.getElementById('rightSidebar').style.transition = 'transform 0.5s ease-in-out';
-
-    // Toggle right sidebar on button click
     document.getElementById('toggle-right-sidebar').addEventListener('click', () => {
         const rightSidebar = document.getElementById('rightSidebar');
-        rightSidebar.style.transform = rightSidebar.style.transform === 'translateX(100%)' ? 'translateX(0)' : 'translateX(100%)';
+        const toggleButton = document.getElementById('toggle-right-sidebar');
+
+        const isSidebarVisible = rightSidebar.style.transform === 'translateX(0%)';
+
+        if (isSidebarVisible) {
+            rightSidebar.style.transition = 'transform 0.3s ease-out'; 
+            rightSidebar.style.transform = 'translateX(100%)';
+            toggleButton.classList.remove('small-button');
+            toggleButton.style.removeProperty('right'); 
+        } else {
+            rightSidebar.style.transition = 'transform 0.3s ease-in'; 
+            rightSidebar.style.transform = 'translateX(0%)';
+            toggleButton.classList.add('small-button');
+            toggleButton.style.right = 'calc(17%)'; 
+        }
     });
 
+    
     // Fetch and display dynamic station data
     fetch('/stations_dynamic')
         .then(response => response.json())
         .then(data => {
             const bikeInfo = document.createElement('p');
-            bikeInfo.textContent = `Bike Info: ${JSON.stringify(data)}`;
+            bikeInfo.textContent = `Bike Info: ${JSON.stringify(data[1])}`;
             document.getElementById('bike-data').appendChild(bikeInfo);
         })
         .catch(error => console.error('Error:', error));
+
 
     //=======================================================================================
     // ---------------------WEATHER FUNCTION ------------------------------------------------
@@ -367,10 +381,9 @@ window.addEventListener('load', () => {
         .then(data => {
             const weatherInfo = document.createElement('p');
             const weatherDetails = data[0];
-            weatherInfo.textContent =
-                `Weather: ${weatherDetails.description},\n
-            Tempature: ${weatherDetails.temperature}°C\n
-            Wind Speed: ${weatherDetails.wind_speed} km/h`;
+            weatherInfo.innerHTML =
+                `Weather:</b> ${weatherDetails.description.charAt(0).toUpperCase() + weatherDetails.description.slice(1)}<br>
+                Temperature:</b> ${weatherDetails.temperature}°C<br>`;
             document.getElementById('weather-data').appendChild(weatherInfo);
         })
         .catch(error => console.error('Error:', error));
