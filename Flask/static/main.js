@@ -29,16 +29,15 @@ const setupAutocomplete = (map, staticData, dynamicData, AdvancedMarkerElement, 
 // ---------------------DISTANCE FUNCTIONS -----------------------------------------------
 
 // Function to calculate the distance between two points using Haversine formula
-function calculateDistance(lat1, lon1, lat2, lon2) {
-    const R = 6371; 
-    // Calculate the differences in latitude and longitude between the two points in radian & covert 
+const calculateDistance = (lat1, lon1, lat2, lon2) => {
+    const R = 6371;
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLon = (lon2 - lon1) * Math.PI / 180;
     const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-              Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c; 
+    return R * c;
 }
 
 // Error checking lat nad lng
@@ -218,6 +217,37 @@ window.initMap = async () => {
     } catch (error) {
         console.error('Error initializing map:', error);
     }
+};
+
+
+
+const placeLocationMarker = (lastKnownLocation, AdvancedMarkerElement, PinElement, map) => {
+    if (!locationMarker) {        
+        const userPinIcon = document.createElement('img');
+        userPinIcon.src = 'static/img/userIcon.png';
+        userPinIcon.id = 'userPinIcon';
+        const userPin = new PinElement({
+            background: 'blue',
+            borderColor: 'blue',
+            glyph: userPinIcon,
+            glyphColor: '#ffffff',
+            scale: 1
+        });
+        
+        locationMarker = new AdvancedMarkerElement({
+            map: map,
+            position: lastKnownLocation,
+            content: userPin.element,
+            gmpClickable: true,
+            gmpDraggable: true,
+            title: "User Location Marker"
+        });
+    } else {
+        directionsRenderer.setDirections({ routes: [] });
+        locationMarker.position = lastKnownLocation
+    }
+    map.setCenter(lastKnownLocation);
+    map.setZoom(15);
 };
 // ---------------------MAP INITIALISATION END-------------------------------------------
 //=======================================================================================
