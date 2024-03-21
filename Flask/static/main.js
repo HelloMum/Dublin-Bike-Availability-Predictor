@@ -1,5 +1,19 @@
 let map, directionsService, directionsRenderer, locationMarker = null, lastKnownLocation = null;
 
+
+// Prevent zooming in and out on the brpwser window
+window.addEventListener('wheel', function (event) {
+    if (event.ctrlKey === true || event.metaKey) {
+        event.preventDefault();
+    }
+}, { passive: false });
+
+window.addEventListener('keydown', function (event) {
+    if ((event.ctrlKey === true || event.metaKey) && (event.key === '0' || event.key === '+' || event.key === '-' || event.key === '=')) {
+        event.preventDefault();
+    }
+}, { passive: false });
+
 // =======================================================================================
 // #####################  FUNCTIONS FOR THE SEARCH BAR  ##################################
 
@@ -118,7 +132,7 @@ const populateDropdownWithStations = (closestStations, userLocation, map, Advanc
         <img src="static/img/distanceIcon.png" alt="Distance" class="distance-icon" />
         <span class="station-distance">${station.distance}</span>
 
-        <img src="static/img/bikeIcon.png" alt="Bikes" class="bikes-icon" />
+        <img src="static/img/bike.png" alt="Bikes" class="bikes-icon" />
         <span class="station-bikes">${station.available_bikes}</span>
 
         <img src="static/img/parkingIcon.png" alt="Stands" class="stands-icon" />
@@ -219,36 +233,6 @@ window.initMap = async () => {
     }
 };
 
-
-
-const placeLocationMarker = (lastKnownLocation, AdvancedMarkerElement, PinElement, map) => {
-    if (!locationMarker) {        
-        const userPinIcon = document.createElement('img');
-        userPinIcon.src = 'static/img/userIcon.png';
-        userPinIcon.id = 'userPinIcon';
-        const userPin = new PinElement({
-            background: 'blue',
-            borderColor: 'blue',
-            glyph: userPinIcon,
-            glyphColor: '#ffffff',
-            scale: 1
-        });
-        
-        locationMarker = new AdvancedMarkerElement({
-            map: map,
-            position: lastKnownLocation,
-            content: userPin.element,
-            gmpClickable: true,
-            gmpDraggable: true,
-            title: "User Location Marker"
-        });
-    } else {
-        directionsRenderer.setDirections({ routes: [] });
-        locationMarker.position = lastKnownLocation
-    }
-    map.setCenter(lastKnownLocation);
-    map.setZoom(15);
-};
 // ---------------------MAP INITIALISATION END-------------------------------------------
 //=======================================================================================
 
@@ -259,13 +243,17 @@ const placeLocationMarker = (lastKnownLocation, AdvancedMarkerElement, PinElemen
     if (!locationMarker) {        
         const userPinIcon = document.createElement('img');
         userPinIcon.src = 'static/img/userIcon.png';
-        userPinIcon.id = 'userPinIcon';
+        userPinIcon.id = 'userPin';
+        userPinIcon.alt = 'User Pin';
+        userPinIcon.style.borderRadius = '40%';
+        userPinIcon.style.width = '40px';
+        userPinIcon.style.height = '40px';  
+
         const userPin = new PinElement({
-            background: 'blue',
-            borderColor: 'blue',
+            borderColor: 'transparent',
+            background: 'lightyellow',
             glyph: userPinIcon,
-            glyphColor: '#ffffff',
-            scale: 1
+            scale: 1.5,
         });
         
         locationMarker = new AdvancedMarkerElement({
@@ -281,7 +269,8 @@ const placeLocationMarker = (lastKnownLocation, AdvancedMarkerElement, PinElemen
         locationMarker.position = lastKnownLocation
     }
     map.setCenter(lastKnownLocation);
-    map.setZoom(15);
+    // slowly pan to it 
+    map.panTo(lastKnownLocation); 
 };
 
 const updateSearchBarAndFindBikeStations = async (latLng, staticData, dynamicData, map) => {
@@ -308,16 +297,25 @@ const intersectionObserver = new IntersectionObserver((entries) => {
 
 const addMarkers = (staticData, dynamicData, PinElement, AdvancedMarkerElement, map) => {
     const infoWindow = new google.maps.InfoWindow();
+    const heatmapData = []; 
     staticData.forEach(staticStation => {
         const dynamicStation = dynamicData.find(dynamic => dynamic.id === staticStation.place_id);
-        if (dynamicStation) {
+        if (dynamicStation && dynamicStation.available_bikes !== undefined) {
+            // Pin color based on the number of available bikes
+            let pinImage  = 'static/img/bike.png';
+            const bikeIcon = document.createElement('img');
+            bikeIcon.src = pinImage;
+            bikeIcon.alt = 'Bike';
+
             const pin = new PinElement({
-                background: '#ff0000',
-                borderColor: '#000000',
-                glyph: '',
-                glyphColor: '#ffffff',
-                scale: 1
+                borderColor: 'transparent',
+                background: 'transparent',
+                glyph: bikeIcon,
+                glyphColor: '#transparent',
+                scale: 1,
             });
+            bikeIcon.style.width = "50px"; 
+            bikeIcon.style.height = "50px"; 
 
             const markerElement = new AdvancedMarkerElement({
                 map: map,
@@ -326,6 +324,13 @@ const addMarkers = (staticData, dynamicData, PinElement, AdvancedMarkerElement, 
                 gmpClickable: true,
                 title: staticStation.place_name
             });
+
+            // Add the available bikes as a weight for the heatmap
+            const weightedLocation = {
+                location: new google.maps.LatLng(parseFloat(staticStation.place_latitude), parseFloat(staticStation.place_longitude)),
+                weight: dynamicStation.available_bikes
+            };
+            heatmapData.push(weightedLocation);
 
             if (markerElement.content) {
                 const content = markerElement.content; 
@@ -360,6 +365,12 @@ const addMarkers = (staticData, dynamicData, PinElement, AdvancedMarkerElement, 
                 infoWindow.open(map);
             });
         }
+    });
+    // Create and display the heatmap
+    const heatmap = new google.maps.visualization.HeatmapLayer({
+        data: heatmapData,
+        map: map,
+        radius: 30
     });
 };
 // ---------------------MAP MARKER FUNCTIONS END-----------------------------------------
