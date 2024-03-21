@@ -242,7 +242,7 @@ window.initMap = async () => {
 const placeLocationMarker = (lastKnownLocation, AdvancedMarkerElement, PinElement, map) => {
     if (!locationMarker) {        
         const userPinIcon = document.createElement('img');
-        userPinIcon.src = 'static/img/userIcon.png';
+        userPinIcon.src = 'static/img/userPin.png';
         userPinIcon.id = 'userPin';
         userPinIcon.alt = 'User Pin';
         userPinIcon.style.borderRadius = '40%';
