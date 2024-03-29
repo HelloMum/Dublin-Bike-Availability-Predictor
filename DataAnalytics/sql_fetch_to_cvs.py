@@ -10,8 +10,8 @@ db_config = {
     "database": "Bikes"
 }
 
-# Create exported_data subfolder if it doesn't exist
-export_folder = "exported_data"
+# Create ExportedData subfolder if it doesn't exist
+export_folder = "ExportedData"
 if not os.path.exists(export_folder):
     os.makedirs(export_folder)
 
