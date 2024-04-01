@@ -2,7 +2,10 @@
 <html> 
 <head> 
     <!-- Load the Google Maps JavaScript API. initMap is will execute when the API has loaded. -->
-    <script async defer src="https://maps.googleapis.com/maps/api/js?v=beta&key={{MAPS_APIKEY}}&libraries=places,marker&callback=initMap"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=beta&key={{MAPS_APIKEY}}&libraries=places,marker,routes,visualization&callback=initMap"
+        async
+        defer>
+    </script>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
     <script src="{{ url_for('static', filename='main.js') }}"></script>
 <body> 
@@ -13,10 +16,15 @@
             <div id = "dropdown-content"></div>
             <!-- Left sidebar content will go here as a dropdown -->
             <!-- Nearest station options will be populated dynamically -->
-        </div>
+        </div>            
+        <!-- Div for bike predicitons-->
+        <div id ="BikeModel"> </div>
+
     </div>
     <div id="current-time"></div>
     <div id="map"><!-- Container for the Google Map. --></div>
+
+    
 
     <button id="toggle-right-sidebar">
         <img src= "static/img/weatherIcon.png" alt="rightSidebar Image">
