@@ -4,6 +4,7 @@ body {
     margin: 0;
     padding: 0;
     position: relative;
+    overflow-x: hidden;
 }
 
 /*=================================================================================*/
@@ -323,3 +324,41 @@ body {
 
 /*---------------------------------- CURRENT TIME END------------------------------ */
 /*=================================================================================*/
+
+/*=================================================================================*/
+/*---------------------- PHONE/SMALLER SCREEN SUPPORT --------------------------- */
+
+@media only screen and (max-width: 1580px) {
+    #searchBar {
+        width: 300px; 
+        left: 10px; 
+        right: 10px; 
+        transform: none; /
+    }
+    
+    #dropdown-content {
+        width: 300px; 
+        left: 10px; 
+        right: 10px; 
+        transform: none; 
+    }
+}
+
+@media only screen and (max-width: 1080px) {
+    #searchBar {
+        width: 200px; 
+        left: 10px; 
+        right: 10px; 
+        transform: none; 
+    }
+    
+    #dropdown-content {
+        width: 200px;
+        left: 10px; 
+        right: 10px; 
+        transform: none;
+    }
+}
+
+/*---------------------------PHONE/SMALLER SCREEN SUPPORT END-------------------- */
+/*===============================================================================*/
