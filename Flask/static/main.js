@@ -189,7 +189,7 @@ window.initMap = async () => {
         const dublin = { lat: 53.346578, lng: -6.3 };
 
         map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 13,
+            zoom: 14,
             center: dublin,
             mapId: 'BIKES_MAP',
         });

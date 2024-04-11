@@ -328,7 +328,7 @@ body {
 /*=================================================================================*/
 /*---------------------- PHONE/SMALLER SCREEN SUPPORT --------------------------- */
 
-@media only screen and (max-width: 1580px) {
+@media only screen and (max-width: 1480px) {
     #searchBar {
         width: 300px; 
         left: 10px; 
