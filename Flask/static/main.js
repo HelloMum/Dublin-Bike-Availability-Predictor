@@ -189,7 +189,7 @@ window.initMap = async () => {
         const dublin = { lat: 53.346578, lng: -6.3 };
 
         map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 13,
+            zoom: 14,
             center: dublin,
             mapId: 'BIKES_MAP',
         });
@@ -261,7 +261,7 @@ const placeLocationMarker = (lastKnownLocation, AdvancedMarkerElement, PinElemen
             position: lastKnownLocation,
             content: userPin.element,
             gmpClickable: true,
-            gmpDraggable: true,
+            gmpDraggable: false,
             title: "User Location Marker"
         });
     } else {
@@ -351,15 +351,16 @@ const addMarkers = (staticData, dynamicData, PinElement, AdvancedMarkerElement, 
             }
 
             markerElement.addListener('gmp-click', () => {
+                const statusColor = dynamicStation.status === 'OPEN' ? 'green' : 'red';
                 const contentString = `
-                    <div id="content">
-                        <h3>${staticStation.place_address}</h3>
-                        <p><b>Status:</b> ${dynamicStation.status}</p>
-                        <p><b>Available Bikes:</b> ${dynamicStation.available_bikes}</p>
-                        <p><b>Available Bike Stands:</b> ${dynamicStation.available_bike_stands}</p>
-                        <p><b>Total Bike Stands:</b> ${dynamicStation.bike_stands}</p>
-                    </div>`;
-
+                <div id="content">
+                    <h3>${staticStation.place_address}</h3>
+                    <p><b>Status:</b> <span style="color: ${statusColor};"><strong>${dynamicStation.status}</strong></span></p>
+                    <p><b>Available Bikes:</b> ${dynamicStation.available_bikes}</p>
+                    <p><b>Available Bike Stands:</b> ${dynamicStation.available_bike_stands}</p>
+                    <p><b>Total Bike Stands:</b> ${dynamicStation.bike_stands}</p>
+                </div>`;
+            
                 infoWindow.setContent(contentString);
                 infoWindow.setPosition(new google.maps.LatLng(staticStation.place_latitude, staticStation.place_longitude));
                 infoWindow.open(map);
