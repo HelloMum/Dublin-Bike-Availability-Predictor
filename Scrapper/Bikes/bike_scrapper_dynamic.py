@@ -5,9 +5,9 @@ from datetime import datetime, timezone
 
 # Connection to the database #sql username, pass, db = sql schema. host = RDS endpoint
 cnx = mysql.connector.connect(
-    user='admin2',
-    password='B!kes2JMT',
-    host='bikes-database-group2.c7yki6c8g16a.eu-west-1.rds.amazonaws.com',
+    user='admin',
+    password='kZhzE5GvxLTHaeKQF6VB',
+    host='database-bikes.cvuo0aug0fzn.eu-north-1.rds.amazonaws.com',
     database='Bikes'
 )
 
