@@ -176,7 +176,6 @@ const calculateAndDisplayRoute = async (directionsService, directionsRenderer, u
 };
 // ---------------------ROUTE FUNCTIONS END----------------------------------------------
 // =======================================================================================
-
 // #####################  FUNCTIONS FOR THE SEARCH BAR  #######################################
 // ============================================================================================
 
@@ -232,7 +231,6 @@ window.initMap = async () => {
         console.error('Error initializing map:', error);
     }
 };
-
 // ---------------------MAP INITIALISATION END-------------------------------------------
 //=======================================================================================
 
@@ -364,6 +362,7 @@ const addMarkers = (staticData, dynamicData, PinElement, AdvancedMarkerElement, 
                 infoWindow.setContent(contentString);
                 infoWindow.setPosition(new google.maps.LatLng(staticStation.place_latitude, staticStation.place_longitude));
                 infoWindow.open(map);
+                getWeatherAndPredict(staticStation);
             });
         }
     });
@@ -374,8 +373,14 @@ const addMarkers = (staticData, dynamicData, PinElement, AdvancedMarkerElement, 
         radius: 30
     });
 };
+
+
+
+
+
 // ---------------------MAP MARKER FUNCTIONS END-----------------------------------------
 //=======================================================================================
+
 
 
 //###########################################################################################
@@ -403,17 +408,6 @@ window.addEventListener('load', () => {
         }
     });
 
-    
-    // Fetch and display dynamic station data
-    fetch('/stations_dynamic')
-        .then(response => response.json())
-        .then(data => {
-            const bikeInfo = document.createElement('p');
-            bikeInfo.textContent = `Bike Info: ${JSON.stringify(data[1])}`;
-            document.getElementById('bike-data').appendChild(bikeInfo);
-        })
-        .catch(error => console.error('Error:', error));
-
 
     //=======================================================================================
     // ---------------------WEATHER FUNCTION ------------------------------------------------
@@ -439,4 +433,50 @@ window.addEventListener('load', () => {
     };
     setInterval(updateTime, 1000);
 });
+
+function getWeatherAndPredict(station) {
+    fetch('/weather')
+        .then(response => response.json())
+        .then(currentWeather => {
+            const weatherData = currentWeather[0]; 
+            getPredictionForStation(station, weatherData);
+        })
+        .catch(error => console.error('Error fetching weather data:', error));
+}
+
+function getPredictionForStation(station, weatherData) {
+    if (!weatherData) {
+        console.error('weatherData is not available');
+        return;
+    }
+
+    
+    const rain_hour_day = weatherData.rain_hour_day !== null ? weatherData.rain_hour_day : 0;
+
+    const dataForPrediction = {
+        number: station.place_id,
+        day_of_week: 1,
+        hour_per_day: 14,
+        rain_hour_day: rain_hour_day || 1,
+        temperature: weatherData.temperature || 11,
+        wind_speed: weatherData.wind_speed || 1,
+        available_bike_stands: station.available_bike_stands || 1,
+    };
+
+    fetch('/predict', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataForPrediction),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Prediction for Station:', data.prediction);
+        document.getElementById('BikeModel').textContent = `Prediction for Station ${station.place_id}: ${data.prediction}`;
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
 

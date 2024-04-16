@@ -1,6 +1,4 @@
-from urllib import request
-
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, request
 from DBinterface import Link
 import config
 import joblib
@@ -34,23 +32,26 @@ with app.app_context():
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    # Get input data from request
-    data = request.get_json()
-    features = [
-        data['number'],
-        data['day_of_week'],
-        data['hour_per_day'],
-        data['rain_hour_day'],
-        data['temperature'],
-        data['wind_speed'],
-        data['available_bike_stands']
-    ]
+    try:
+        # Get input data from request
+        data = request.get_json()
+        features = [
+            data['number'],
+            data['day_of_week'],
+            data['hour_per_day'],
+            data['rain_hour_day'],
+            data['temperature'],
+            data['wind_speed'],
+            data['available_bike_stands']
+        ]
 
-    # Make prediction using the loaded model
-    prediction = model.predict([features])[0]
+        # Make prediction using the loaded model
+        prediction = model.predict([features])[0]
 
     # Return prediction as JSON response
-    return jsonify({'prediction': prediction})
+        return jsonify({'prediction': prediction})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route("/")
 def index():
