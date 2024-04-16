@@ -32,6 +32,7 @@ with app.app_context():
     print(weather_last)
 
 
+
 @app.route('/predict', methods=['POST'])
 def predict():
     # Get the ID from the JSON data
