@@ -217,16 +217,6 @@ window.initMap = async () => {
             placeLocationMarker(e.latLng, AdvancedMarkerElement, PinElement, map);
             updateSearchBarAndFindBikeStations(e.latLng, staticData, dynamicData, map);
         });
-
-        // TODO
-        document.getElementById('centerOnLocation').addEventListener('click', () => {
-            if (lastKnownLocation) {
-                map.setCenter(lastKnownLocation);
-                map.setZoom(20);
-            } else {
-                console.log('No known last location.');
-            }
-        });
     } catch (error) {
         console.error('Error initializing map:', error);
     }
@@ -362,7 +352,7 @@ const addMarkers = (staticData, dynamicData, PinElement, AdvancedMarkerElement, 
                 infoWindow.setContent(contentString);
                 infoWindow.setPosition(new google.maps.LatLng(staticStation.place_latitude, staticStation.place_longitude));
                 infoWindow.open(map);
-                getWeatherAndPredict(staticStation);
+                getHeatmap(staticStation.place_id);
             });
         }
     });
@@ -373,10 +363,6 @@ const addMarkers = (staticData, dynamicData, PinElement, AdvancedMarkerElement, 
         radius: 30
     });
 };
-
-
-
-
 
 // ---------------------MAP MARKER FUNCTIONS END-----------------------------------------
 //=======================================================================================
@@ -426,13 +412,16 @@ window.addEventListener('load', () => {
 
     // ---------------------WEATHER FUNCTION END ------------------------------------------------
     //===========================================================================================
-
     // Update time every second
     const updateTime = () => {
         document.getElementById('current-time').textContent = new Date().toLocaleTimeString();
     };
     setInterval(updateTime, 1000);
 });
+
+
+
+
 
 function getWeatherAndPredict(station) {
     fetch('/weather')
@@ -444,15 +433,16 @@ function getWeatherAndPredict(station) {
         .catch(error => console.error('Error fetching weather data:', error));
 }
 
+
+
+
+//TODO
 function getPredictionForStation(station, weatherData) {
     if (!weatherData) {
         console.error('weatherData is not available');
         return;
     }
-
-    
     const rain_hour_day = weatherData.rain_hour_day !== null ? weatherData.rain_hour_day : 0;
-
     const dataForPrediction = {
         number: station.place_id,
         day_of_week: 1,
@@ -462,8 +452,7 @@ function getPredictionForStation(station, weatherData) {
         wind_speed: weatherData.wind_speed || 1,
         available_bike_stands: station.available_bike_stands || 1,
     };
-
-    fetch('/predict', {
+    fetch('/predict_static', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -480,3 +469,56 @@ function getPredictionForStation(station, weatherData) {
     });
 }
 
+
+
+
+function getHeatmap(stationId) {
+    const requestData = {
+        station: stationId
+    };
+    fetch('/plot_heatmap', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestData)
+    })
+    .then(response => response.blob()) 
+    .then(blob => {
+        const imageUrl = URL.createObjectURL(blob);
+        const heatmapImage = document.createElement('img');
+        heatmapImage.src = imageUrl;
+        heatmapImage.alt = 'Heatmap Image';
+        heatmapImage.style.width = '100%'; 
+        heatmapImage.style.height = 'auto'; 
+        // Clear any existing content and append the image
+        const bikeModelsDiv = document.getElementById('BikeModels');
+        bikeModelsDiv.innerHTML = ''; 
+        bikeModelsDiv.appendChild(heatmapImage); 
+    })
+    .catch(error => {
+        console.error('Error fetching the heatmap image:', error);
+    });
+}
+
+
+function displayActualVsPredictedPlot() {
+    fetch('/plot_actual_vs_predicted')
+    .then(response => response.blob()) 
+    .then(blob => {
+        const imageUrl = URL.createObjectURL(blob);
+        const image = new Image();
+        image.src = imageUrl;
+        image.alt = 'Actual vs Predicted Plot';
+        image.style.width = '100%';
+        image.style.height = 'auto'; 
+
+        const bikeDataDiv = document.getElementById('bike-data');
+        bikeDataDiv.innerHTML = '';
+        bikeDataDiv.appendChild(image); 
+    })
+    .catch(error => {
+        console.error('Error fetching the Actual vs Predicted plot:', error);
+    });
+}
+displayActualVsPredictedPlot();
