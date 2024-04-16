@@ -353,6 +353,7 @@ const addMarkers = (staticData, dynamicData, PinElement, AdvancedMarkerElement, 
                 infoWindow.setPosition(new google.maps.LatLng(staticStation.place_latitude, staticStation.place_longitude));
                 infoWindow.open(map);
                 getHeatmap(staticStation.place_id);
+                displayActualVsPredictedPlot(staticData.place_id);
             });
         }
     });
@@ -492,7 +493,7 @@ function getHeatmap(stationId) {
         heatmapImage.style.width = '100%'; 
         heatmapImage.style.height = 'auto'; 
         // Clear any existing content and append the image
-        const bikeModelsDiv = document.getElementById('BikeModels');
+        const bikeModelsDiv = document.getElementById('bike-data');
         bikeModelsDiv.innerHTML = ''; 
         bikeModelsDiv.appendChild(heatmapImage); 
     })
@@ -502,23 +503,39 @@ function getHeatmap(stationId) {
 }
 
 
-function displayActualVsPredictedPlot() {
-    fetch('/plot_actual_vs_predicted')
-    .then(response => response.blob()) 
+function displayActualVsPredictedPlot(stationId) {
+    const data = { id: stationId };
+    fetch('/predict', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.blob();
+        } else {
+            throw new Error('Failed to load the predicted plot image.');
+        }
+    })
     .then(blob => {
         const imageUrl = URL.createObjectURL(blob);
         const image = new Image();
         image.src = imageUrl;
-        image.alt = 'Actual vs Predicted Plot';
+        image.alt = 'Predicted Data Plot';
         image.style.width = '100%';
-        image.style.height = 'auto'; 
+        image.style.height = 'auto';
 
-        const bikeDataDiv = document.getElementById('bike-data');
-        bikeDataDiv.innerHTML = '';
-        bikeDataDiv.appendChild(image); 
+        const bikeDataDiv = document.getElementById('BikeModel');
+        bikeDataDiv.innerHTML = '';  
+        bikeDataDiv.appendChild(image);  
     })
     .catch(error => {
-        console.error('Error fetching the Actual vs Predicted plot:', error);
+        console.error('Error fetching the Predicted Data Plot:', error);
+        document.getElementById('BikeModel').innerHTML = '<p>Error loading plot.</p>';
     });
 }
-displayActualVsPredictedPlot();
+
+
+

@@ -1,7 +1,6 @@
-from urllib import request
 
 import pandas as pd
-from flask import Flask, render_template, jsonify, send_file
+from flask import Flask, render_template, jsonify, send_file, request
 from matplotlib import pyplot as plt
 import seaborn as sns
 from DBinterface import Link
@@ -83,7 +82,7 @@ def predict():
     # Print the received ID in the console
     print("Received ID:", id)
 
-    data = {'id': id, 'number': 1, 'day_of_week': 1, 'hour_per_day': 16, 'rain_hour_day': 1, 'temperature': 13, 'wind_speed': 2, 'available_bike_stands': 30}
+    data = {'number': id, 'day_of_week': 1, 'hour_per_day': 16, 'rain_hour_day': 1, 'temperature': 13, 'wind_speed': 2, 'available_bike_stands': 30}
 
     # Sample input data for prediction
     input_data = pd.DataFrame([data])
@@ -91,8 +90,14 @@ def predict():
     # Make prediction
     prediction = svm_regressor.predict(input_data)
 
-    # Return prediction as JSON response
-    return jsonify({'prediction': prediction.tolist()})
+    fig, ax = plt.subplots()
+    ax.plot(prediction)
+    ax.set_title("Predicted Data Plot")
+    plt.savefig('predict_img.png')  
+    plt.close(fig)
+
+    # Return the plot as a response
+    return send_file("predict_img.png", mimetype='image/png')
 
 
 
