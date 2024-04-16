@@ -1,7 +1,9 @@
 from urllib import request
 
 import pandas as pd
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, send_file
+from matplotlib import pyplot as plt
+import seaborn as sns
 from DBinterface import Link
 import config
 import joblib
@@ -32,6 +34,46 @@ with app.app_context():
     print(weather_last)
 
 
+
+@app.route('/plot_heatmap', methods=['POST'])
+def plot_heatmap_route():
+    # Get the JSON data from the request
+    data = request.json
+    station = data['station']
+
+    # Sample input data for prediction
+    input_data = pd.DataFrame({
+        'number': [station],
+        'day_of_week': [1],
+        'hour_per_day': [16],
+        'rain_hour_day': [1],
+        'temperature': [13],
+        'wind_speed': [2],
+        'available_bike_stands': [30]
+    })
+
+    # Make prediction
+    prediction = svm_regressor.predict(input_data)
+
+    # Combine features and prediction for the test data
+    test_data_with_prediction = input_data.copy()
+    test_data_with_prediction['Predicted Available Bikes'] = prediction
+
+    # Pivot the table to get the relationship between bike stations, time of the day, and predicted available bikes
+    pivot_table = test_data_with_prediction.pivot_table(index='number', columns='hour_per_day', values='Predicted Available Bikes', aggfunc='mean')
+
+    # Plot the heatmap
+    plt.figure(figsize=(12, 8))
+    sns.heatmap(pivot_table, cmap='viridis', linecolor='white', linewidth=1)
+    plt.title('Predicted Available Bikes for Station {}'.format(station))
+    plt.xlabel('Hour of the Day')
+    plt.ylabel('Bike Station Number')
+
+    # Save the plot as an image
+    plt.savefig('heatmap.png')
+
+    # Return the image file as a response
+    return send_file('heatmap.png', mimetype='image/png')
 
 @app.route('/predict', methods=['POST'])
 def predict():
