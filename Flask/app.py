@@ -1,5 +1,6 @@
 from urllib import request
 
+import pandas as pd
 from flask import Flask, render_template, jsonify
 from DBinterface import Link
 import config
@@ -18,7 +19,7 @@ DBconfig = config.CNX
 
 
 with app.app_context():
-    model = joblib.load('SVM_model.pkl')
+    svm_regressor = joblib.load('svm_regressor_model.pkl')
     print ("App context started")
     database = Link(DBconfig)
     dynamic_last = database.get_dynamic_all_stations_last()
@@ -31,26 +32,26 @@ with app.app_context():
     print(weather_last)
 
 
-
 @app.route('/predict', methods=['POST'])
 def predict():
-    # Get input data from request
-    data = request.get_json()
-    features = [
-        data['number'],
-        data['day_of_week'],
-        data['hour_per_day'],
-        data['rain_hour_day'],
-        data['temperature'],
-        data['wind_speed'],
-        data['available_bike_stands']
-    ]
+    # Get the ID from the JSON data
+    id = request.json.get('id')
 
-    # Make prediction using the loaded model
-    prediction = model.predict([features])[0]
+    # Print the received ID in the console
+    print("Received ID:", id)
+
+    data = {'id': id, 'number': 1, 'day_of_week': 1, 'hour_per_day': 16, 'rain_hour_day': 1, 'temperature': 13, 'wind_speed': 2, 'available_bike_stands': 30}
+
+    # Sample input data for prediction
+    input_data = pd.DataFrame([data])
+
+    # Make prediction
+    prediction = svm_regressor.predict(input_data)
 
     # Return prediction as JSON response
-    return jsonify({'prediction': prediction})
+    return jsonify({'prediction': prediction.tolist()})
+
+
 
 @app.route("/")
 def index():
