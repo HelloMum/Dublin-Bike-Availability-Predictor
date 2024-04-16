@@ -1,6 +1,9 @@
+from urllib import request
+
 from flask import Flask, render_template, jsonify
 from DBinterface import Link
 import config
+import joblib
 
 # Initialize Google Maps client and app instance
 
@@ -15,6 +18,7 @@ DBconfig = config.CNX
 
 
 with app.app_context():
+    model = joblib.load('SVM_model.pkl')
     print ("App context started")
     database = Link(DBconfig)
     dynamic_last = database.get_dynamic_all_stations_last()
@@ -26,6 +30,27 @@ with app.app_context():
     print(static_all)
     print(weather_last)
 
+
+
+@app.route('/predict', methods=['POST'])
+def predict():
+    # Get input data from request
+    data = request.get_json()
+    features = [
+        data['number'],
+        data['day_of_week'],
+        data['hour_per_day'],
+        data['rain_hour_day'],
+        data['temperature'],
+        data['wind_speed'],
+        data['available_bike_stands']
+    ]
+
+    # Make prediction using the loaded model
+    prediction = model.predict([features])[0]
+
+    # Return prediction as JSON response
+    return jsonify({'prediction': prediction})
 
 @app.route("/")
 def index():
