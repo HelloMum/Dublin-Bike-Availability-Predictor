@@ -1,14 +1,11 @@
-from urllib import request
-
-import pandas as pd
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, request
 from DBinterface import Link
 import config
 import joblib
-
-# Initialize Google Maps client and app instance
-
-# MySQL configurations
+import pandas as pd
+from flask import send_file
+import matplotlib.pyplot as plt
+import seaborn as sns   
 
 
 print("Starting app...")
@@ -19,7 +16,7 @@ DBconfig = config.CNX
 
 
 with app.app_context():
-    svm_regressor = joblib.load('svm_regressor_model.pkl')
+    model = joblib.load('SVM_model.pkl')
     print ("App context started")
     database = Link(DBconfig)
     dynamic_last = database.get_dynamic_all_stations_last()
@@ -30,28 +27,69 @@ with app.app_context():
     print(dynamic_last)
     print(static_all)
     print(weather_last)
+    
+    
+def load_test_data():
+    # Load X_test and y_test from CSV files
+    X_test = pd.read_csv('X_test.csv')
+    y_test = pd.read_csv('y_test.csv', squeeze = True)  
+    return X_test, y_test
+
+
+@app.route('/plot_actual_vs_predicted')
+def plot_actual_vs_predicted():
+    X_test, y_test = load_test_data()
+    svm_regressor = joblib.load('svm_regressor_model.pkl')
+    # Make predictions on the test set
+    y_pred = svm_regressor.predict(X_test)
+
+
+    # Plot predicted vs actual
+    plt.figure(figsize=(8, 6))
+    plt.scatter(y_test, y_pred, alpha=0.5)
+    plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], '--', color = 'red')
+    plt.xlabel('Actual')
+    plt.ylabel('Predicted')
+    plt.title('Actual vs Predicted')
+    plt.savefig('actual_vs_predicted.png') 
+    plt.close()
+    return send_file('actual_vs_predicted.png', mimetype = 'image/png', as_attachment = False)
+    
+    
+
+@app.route('/plot_heatmap', methods = ['POST'])
+def plot_heatmap_route():
+    data = request.json
+    station = data['station']
+    plot_heatmap(station)
+    return send_file('heatmap.png', mimetype = 'image/png')
+
+
+def plot_heatmap(station):
+    pivot_table = station.pivot_table(index = 'number', columns = 'hour_per_day', values = 'Predicted Available Bikes', aggfunc = 'mean')
+    plt.figure(figsize = (12, 8))
+    sns.heatmap(pivot_table, cmap = 'viridis', linecolor = 'white', linewidth = 1)
+    plt.title('Predicted Available Bikes for ' + station)
+    plt.xlabel('Hour of the Day')
+    plt.ylabel('Bike Station Number')
+    plt.savefig('heatmap.png') 
+    plt.close() 
 
 
 
-@app.route('/predict', methods=['POST'])
-def predict():
-    # Get the ID from the JSON data
-    id = request.json.get('id')
-
-    # Print the received ID in the console
-    print("Received ID:", id)
-
-    data = {'id': id, 'number': 1, 'day_of_week': 1, 'hour_per_day': 16, 'rain_hour_day': 1, 'temperature': 13, 'wind_speed': 2, 'available_bike_stands': 30}
-
-    # Sample input data for prediction
-    input_data = pd.DataFrame([data])
-
-    # Make prediction
-    prediction = svm_regressor.predict(input_data)
-
-    # Return prediction as JSON response
-    return jsonify({'prediction': prediction.tolist()})
-
+@app.route("/predict_static")
+def predict_static():
+    input_data = pd.DataFrame({
+        'number': [2],
+        'day_of_week': [2],
+        'hour_per_day': [12],
+        'rain_hour_day': [100],
+        'temperature': [20],
+        'wind_speed': [10],
+        'available_bike_stands': [20]
+    })
+    prediction = model.predict(input_data)
+    return jsonify({'prediction': int(prediction[0])}) 
 
 
 @app.route("/")

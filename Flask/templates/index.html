@@ -6,6 +6,9 @@
         async
         defer>
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
     <script src="{{ url_for('static', filename='main.js') }}"></script>
 <body> 
@@ -18,7 +21,7 @@
             <!-- Nearest station options will be populated dynamically -->
         </div>            
         <!-- Div for bike predicitons-->
-        <div id ="BikeModel"> </div>
+        <canvas id ="BikeModel"> </canvas>
 
     </div>
     <div id="current-time"></div>
@@ -33,9 +36,9 @@
         <div id="weather-data">
             <!-- Weather data will be populated dynamically -->
         </div>
-        <div id="bike-data">
+        <canvas id="bike-data">
             <!-- Bike data will be populated dynamically -->
-        </div>
+        </canvas>
     </div>         
     
     </div>         
