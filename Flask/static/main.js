@@ -353,7 +353,7 @@ const addMarkers = (staticData, dynamicData, PinElement, AdvancedMarkerElement, 
                 infoWindow.setPosition(new google.maps.LatLng(staticStation.place_latitude, staticStation.place_longitude));
                 infoWindow.open(map);
                 getHeatmap(staticStation.place_id);
-                displayActualVsPredictedPlot(staticData.place_id);
+                displayActualVsPredictedPlot(staticStation.place_id);
             });
         }
     });
@@ -504,13 +504,15 @@ function getHeatmap(stationId) {
 
 
 function displayActualVsPredictedPlot(stationId) {
-    const data = { id: stationId };
+     const requestData = {
+         station: stationId
+     }
     fetch('/predict', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(requestData)
     })
     .then(response => {
         if (response.ok) {

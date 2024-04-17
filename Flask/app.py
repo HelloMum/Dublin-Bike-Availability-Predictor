@@ -37,12 +37,12 @@ with app.app_context():
 @app.route('/plot_heatmap', methods=['POST'])
 def plot_heatmap_route():
     # Get the JSON data from the request
-    data = request.json
-    station = data['station']
+    station = request.json
+    print("Received ID:", station)
 
     # Sample input data for prediction
     input_data = pd.DataFrame({
-        'number': [station],
+        'number': [station['station']],
         'day_of_week': [1],
         'hour_per_day': [16],
         'rain_hour_day': [1],
@@ -58,34 +58,37 @@ def plot_heatmap_route():
     test_data_with_prediction = input_data.copy()
     test_data_with_prediction['Predicted Available Bikes'] = prediction
 
-    # Pivot the table to get the relationship between bike stations, time of the day, and predicted available bikes
+    # Generate heatmap
     pivot_table = test_data_with_prediction.pivot_table(index='number', columns='hour_per_day', values='Predicted Available Bikes', aggfunc='mean')
-
-    # Plot the heatmap
     plt.figure(figsize=(12, 8))
     sns.heatmap(pivot_table, cmap='viridis', linecolor='white', linewidth=1)
-    plt.title('Predicted Available Bikes for Station {}'.format(station))
+    plt.title('Predicted Available Bikes for Station {}'.format(station['station']))
     plt.xlabel('Hour of the Day')
     plt.ylabel('Bike Station Number')
 
     # Save the plot as an image
     plt.savefig('heatmap.png')
+    plt.close()
 
     # Return the image file as a response
     return send_file('heatmap.png', mimetype='image/png')
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    # Get the ID from the JSON data
-    id = request.json.get('id')
-
-    # Print the received ID in the console
-    print("Received ID:", id)
-
-    data = {'number': id, 'day_of_week': 1, 'hour_per_day': 16, 'rain_hour_day': 1, 'temperature': 13, 'wind_speed': 2, 'available_bike_stands': 30}
+    # Get the JSON data from the request
+    station = request.json
+    print("Received ID:", station)
 
     # Sample input data for prediction
-    input_data = pd.DataFrame([data])
+    input_data = pd.DataFrame({
+        'number': [station['station']],
+        'day_of_week': [1],
+        'hour_per_day': [16],
+        'rain_hour_day': [1],
+        'temperature': [13],
+        'wind_speed': [2],
+        'available_bike_stands': [30]
+    })
 
     # Make prediction
     prediction = svm_regressor.predict(input_data)
@@ -93,7 +96,7 @@ def predict():
     fig, ax = plt.subplots()
     ax.plot(prediction)
     ax.set_title("Predicted Data Plot")
-    plt.savefig('predict_img.png')  
+    plt.savefig('predict_img.png')
     plt.close(fig)
 
     # Return the plot as a response
