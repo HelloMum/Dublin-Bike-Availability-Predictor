@@ -144,7 +144,6 @@ def generate_context_station(station):
     print("Rain hour day:", rain_hour_day_list)
     print("Temperature:", temperature_list)
     print("Wind speed:", wind_speed_list)
-    print("Available bike stands:", available_bike_stands_list)
 
     # Construct DataFrame
     input_data = pd.DataFrame({
