@@ -122,8 +122,8 @@ const populateDropdownWithStations = (closestStations, userLocation, map, Advanc
 
     closestStations.forEach(station => {
         const option = document.createElement('button');
-        option.innerHTML = 
-        `<div class="station-info">
+        option.innerHTML =
+            `<div class="station-info">
         <span class="station-name"><b>${station.place_address}</b></span>
 
         <img src="static/img/openclosedIcon.png" alt="Status" class="status-icon" />
@@ -140,6 +140,8 @@ const populateDropdownWithStations = (closestStations, userLocation, map, Advanc
         </div>
         `;
         option.addEventListener('click', () => calculateAndDisplayRoute(directionsService, directionsRenderer, userLocation, station, map, AdvancedMarkerElement));
+
+        
         fragment.appendChild(option);
     });
 
@@ -228,14 +230,14 @@ window.initMap = async () => {
 // =======================================================================================
 // ---------------------MAP MARKER FUNCTIONS ---------------------------------------------
 const placeLocationMarker = (lastKnownLocation, AdvancedMarkerElement, PinElement, map) => {
-    if (!locationMarker) {        
+    if (!locationMarker) {
         const userPinIcon = document.createElement('img');
         userPinIcon.src = 'static/img/userPin.png';
         userPinIcon.id = 'userPin';
         userPinIcon.alt = 'User Pin';
         userPinIcon.style.borderRadius = '40%';
         userPinIcon.style.width = '40px';
-        userPinIcon.style.height = '40px';  
+        userPinIcon.style.height = '40px';
 
         const userPin = new PinElement({
             borderColor: 'transparent',
@@ -243,7 +245,7 @@ const placeLocationMarker = (lastKnownLocation, AdvancedMarkerElement, PinElemen
             glyph: userPinIcon,
             scale: 1.5,
         });
-        
+
         locationMarker = new AdvancedMarkerElement({
             map: map,
             position: lastKnownLocation,
@@ -258,7 +260,7 @@ const placeLocationMarker = (lastKnownLocation, AdvancedMarkerElement, PinElemen
     }
     map.setCenter(lastKnownLocation);
     // slowly pan to it 
-    map.panTo(lastKnownLocation); 
+    map.panTo(lastKnownLocation);
 };
 
 const updateSearchBarAndFindBikeStations = async (latLng, staticData, dynamicData, map) => {
@@ -281,16 +283,16 @@ const intersectionObserver = new IntersectionObserver((entries) => {
             intersectionObserver.unobserve(entry.target);
         }
     });
-}, { threshold: 0.1 }); 
+}, { threshold: 0.1 });
 
 const addMarkers = (staticData, dynamicData, PinElement, AdvancedMarkerElement, map) => {
     const infoWindow = new google.maps.InfoWindow();
-    const heatmapData = []; 
+    const heatmapData = [];
     staticData.forEach(staticStation => {
         const dynamicStation = dynamicData.find(dynamic => dynamic.id === staticStation.place_id);
         if (dynamicStation && dynamicStation.available_bikes !== undefined) {
             // Pin color based on the number of available bikes
-            let pinImage  = 'static/img/bike.png';
+            let pinImage = 'static/img/bike.png';
             const bikeIcon = document.createElement('img');
             bikeIcon.src = pinImage;
             bikeIcon.alt = 'Bike';
@@ -302,8 +304,8 @@ const addMarkers = (staticData, dynamicData, PinElement, AdvancedMarkerElement, 
                 glyphColor: '#transparent',
                 scale: 1,
             });
-            bikeIcon.style.width = "50px"; 
-            bikeIcon.style.height = "50px"; 
+            bikeIcon.style.width = "50px";
+            bikeIcon.style.height = "50px";
 
             const markerElement = new AdvancedMarkerElement({
                 map: map,
@@ -321,7 +323,7 @@ const addMarkers = (staticData, dynamicData, PinElement, AdvancedMarkerElement, 
             heatmapData.push(weightedLocation);
 
             if (markerElement.content) {
-                const content = markerElement.content; 
+                const content = markerElement.content;
 
                 content.style.opacity = "0";
                 content.classList.add("drop");
@@ -348,7 +350,7 @@ const addMarkers = (staticData, dynamicData, PinElement, AdvancedMarkerElement, 
                     <p><b>Available Bike Stands:</b> ${dynamicStation.available_bike_stands}</p>
                     <p><b>Total Bike Stands:</b> ${dynamicStation.bike_stands}</p>
                 </div>`;
-            
+
                 infoWindow.setContent(contentString);
                 infoWindow.setPosition(new google.maps.LatLng(staticStation.place_latitude, staticStation.place_longitude));
                 infoWindow.open(map);
@@ -374,7 +376,7 @@ const addMarkers = (staticData, dynamicData, PinElement, AdvancedMarkerElement, 
 // ---------------------ONLOAD FUNCTIONS ----------------------------------------------------
 // Make sure the map and sidebars are loaded before running
 window.addEventListener('load', () => {
-    initMap();  
+    initMap();
 
     document.getElementById('toggle-right-sidebar').addEventListener('click', () => {
         const rightSidebar = document.getElementById('rightSidebar');
@@ -383,15 +385,15 @@ window.addEventListener('load', () => {
         const isSidebarVisible = rightSidebar.style.transform === 'translateX(0%)';
 
         if (isSidebarVisible) {
-            rightSidebar.style.transition = 'transform 0.3s ease-out'; 
+            rightSidebar.style.transition = 'transform 0.3s ease-out';
             rightSidebar.style.transform = 'translateX(100%)';
             toggleButton.classList.remove('small-button');
-            toggleButton.style.removeProperty('right'); 
+            toggleButton.style.removeProperty('right');
         } else {
-            rightSidebar.style.transition = 'transform 0.3s ease-in'; 
+            rightSidebar.style.transition = 'transform 0.3s ease-in';
             rightSidebar.style.transform = 'translateX(0%)';
             toggleButton.classList.add('small-button');
-            toggleButton.style.right = 'calc(17%)'; 
+            toggleButton.style.right = 'calc(26%)';
         }
     });
 
@@ -428,7 +430,7 @@ function getWeatherAndPredict(station) {
     fetch('/weather')
         .then(response => response.json())
         .then(currentWeather => {
-            const weatherData = currentWeather[0]; 
+            const weatherData = currentWeather[0];
             getPredictionForStation(station, weatherData);
         })
         .catch(error => console.error('Error fetching weather data:', error));
@@ -460,83 +462,84 @@ function getPredictionForStation(station, weatherData) {
         },
         body: JSON.stringify(dataForPrediction),
     })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Prediction for Station:', data.prediction);
-        document.getElementById('BikeModel').textContent = `Prediction for Station ${station.place_id}: ${data.prediction}`;
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
+        .then(response => response.json())
+        .then(data => {
+            console.log('Prediction for Station:', data.prediction);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
 }
 
 
 
 
 function getHeatmap(stationId) {
-    const requestData = {
-        station: stationId
-    };
+    const requestData = { station: stationId };
     fetch('/plot_heatmap', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestData)
     })
-    .then(response => response.blob()) 
+    .then(response => response.blob())
     .then(blob => {
         const imageUrl = URL.createObjectURL(blob);
-        const heatmapImage = document.createElement('img');
+        const bikeDataDiv = document.getElementById('bike-data');
+        // Clear any existing content
+        bikeDataDiv.innerHTML = '';
+        // Create a new img element
+        const heatmapImage = new Image();
+        heatmapImage.onload = function() {
+            bikeDataDiv.appendChild(heatmapImage);
+        };
         heatmapImage.src = imageUrl;
         heatmapImage.alt = 'Heatmap Image';
-        heatmapImage.style.width = '100%'; 
-        heatmapImage.style.height = 'auto'; 
-        // Clear any existing content and append the image
-        const bikeModelsDiv = document.getElementById('bike-data');
-        bikeModelsDiv.innerHTML = ''; 
-        bikeModelsDiv.appendChild(heatmapImage); 
-    })
+        heatmapImage.style.width = '135%'; 
+        heatmapImage.style.height = '75%';
+        heatmapImage.style.marginRight = '-12%';
+    })  
     .catch(error => {
         console.error('Error fetching the heatmap image:', error);
     });
 }
 
 
-function displayActualVsPredictedPlot(stationId) {
-     const requestData = {
-         station: stationId
-     }
-    fetch('/predict', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(requestData)
-    })
-    .then(response => {
-        if (response.ok) {
-            return response.blob();
-        } else {
-            throw new Error('Failed to load the predicted plot image.');
-        }
-    })
-    .then(blob => {
-        const imageUrl = URL.createObjectURL(blob);
-        const image = new Image();
-        image.src = imageUrl;
-        image.alt = 'Predicted Data Plot';
-        image.style.width = '100%';
-        image.style.height = 'auto';
 
-        const bikeDataDiv = document.getElementById('BikeModel');
-        bikeDataDiv.innerHTML = '';  
-        bikeDataDiv.appendChild(image);  
+function displayActualVsPredictedPlot(stationId) {
+    const requestData = {
+        station: stationId,
+    };
+    fetch("/predict", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData),
     })
-    .catch(error => {
-        console.error('Error fetching the Predicted Data Plot:', error);
-        document.getElementById('BikeModel').innerHTML = '<p>Error loading plot.</p>';
-    });
+        .then((response) => {
+            if (response.ok) {
+                return response.blob();
+            } else {
+                throw new Error("Failed to load the predicted plot image.");
+            }
+        })
+        .then((blob) => {
+            const imageUrl = URL.createObjectURL(blob);
+            const image = new Image();
+            image.src = imageUrl;
+            image.alt = "Predicted Data Plot";
+            image.style.width = "100%";
+            image.style.height = "auto";
+
+            const bikeDataDiv = document.getElementById("BikeModel");
+            bikeDataDiv.innerHTML = "";
+            bikeDataDiv.appendChild(image);
+        })
+        .catch((error) => {
+            console.error("Error fetching the Predicted Data Plot:", error);
+            document.getElementById("BikeModel").innerHTML =
+                "<p>Error loading plot.</p>";
+        });
 }
 
 

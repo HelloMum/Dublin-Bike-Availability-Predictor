@@ -20,9 +20,12 @@
             <!-- Left sidebar content will go here as a dropdown -->
             <!-- Nearest station options will be populated dynamically -->
         </div>            
-        <!-- Div for bike predicitons-->
-        <canvas id ="BikeModel"> </canvas>
-
+    
+        <div id="BikeModel" class="sidebar-section">
+            <p class="placeholder-text">Click on a station icon for more info</p>
+            <!-- The predicted plot image will be appended here by JavaScript -->
+        </div>
+        
     </div>
     <div id="current-time"></div>
     <div id="map"><!-- Container for the Google Map. --></div>
@@ -35,10 +38,14 @@
     <div id="rightSidebar" class="sidebar">
         <div id="weather-data">
             <!-- Weather data will be populated dynamically -->
+        </div>       
+        
+        <!-- Div for bike predicitons-->
+        <div id="bike-data" class="sidebar-section">
+            <p class="placeholder-text">Click on a station icon for more info</p>
+            <!-- The heatmap image will be appended here by JavaScript -->
         </div>
-        <canvas id="bike-data">
-            <!-- Bike data will be populated dynamically -->
-        </canvas>
+
     </div>         
     
     </div>         

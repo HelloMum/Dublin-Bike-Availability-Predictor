@@ -1,6 +1,8 @@
 
 import pandas as pd
 from flask import Flask, render_template, jsonify, send_file, request
+import matplotlib
+matplotlib.use('Agg')  # Set the backend before importing pyplot
 from matplotlib import pyplot as plt
 import seaborn as sns
 from DBinterface import Link
@@ -39,16 +41,16 @@ def plot_heatmap_route():
     # Get the JSON data from the request
     station = request.json
     print("Received ID:", station)
-
+    hours_of_day = list(range(1, 25))
     # Sample input data for prediction
     input_data = pd.DataFrame({
-        'number': [station['station']],
-        'day_of_week': [1],
-        'hour_per_day': [16],
-        'rain_hour_day': [1],
-        'temperature': [13],
-        'wind_speed': [2],
-        'available_bike_stands': [30]
+        'number': [station['station']] * len(hours_of_day),
+        'day_of_week': [1] * len(hours_of_day),
+        'hour_per_day': hours_of_day,
+        'rain_hour_day': [1] * len(hours_of_day), 
+        'temperature': [13] * len(hours_of_day),  
+        'wind_speed': [2] * len(hours_of_day), 
+        'available_bike_stands': [30] * len(hours_of_day)
     })
 
     # Make prediction
@@ -60,6 +62,8 @@ def plot_heatmap_route():
 
     # Generate heatmap
     pivot_table = test_data_with_prediction.pivot_table(index='number', columns='hour_per_day', values='Predicted Available Bikes', aggfunc='mean')
+    print(pivot_table)
+
     plt.figure(figsize=(12, 8))
     sns.heatmap(pivot_table, cmap='viridis', linecolor='white', linewidth=1)
     plt.title('Predicted Available Bikes for Station {}'.format(station['station']))
