@@ -6,4 +6,6 @@
 /Flask/config_LOCAL_37761.py
 /Flask/config_REMOTE_37761.py
 /DataAnalytics/pickles/
-
+/Flask/predict_img.png
+/Flask/heatmap.png
+/Flask/predict_img.svg
