@@ -432,43 +432,6 @@ function getWeatherAndPredict(station) {
 }
 
 
-function displayActualVsPredictedPlot(stationId) {
-    const requestData = {
-        station: stationId,
-    };
-    fetch("/predict", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestData),
-    })
-        .then((response) => {
-            if (response.ok) {
-                return response.blob();
-            } else {
-                throw new Error("Failed to load the predicted plot image.");
-            }
-        })
-        .then((blob) => {
-            const imageUrl = URL.createObjectURL(blob);
-            const image = new Image();
-            image.src = imageUrl;
-            image.alt = "Predicted Data Plot";
-            image.style.width = "100%";
-            image.style.height = "auto";
-
-            const bikeDataDiv = document.getElementById("BikeModel");
-            bikeDataDiv.innerHTML = "";
-            bikeDataDiv.appendChild(image);
-        })
-        .catch((error) => {
-            console.error("Error fetching the Predicted Data Plot:", error);
-            document.getElementById("BikeModel").innerHTML =
-                "<p>Error loading plot.</p>";
-        });
-}
-
 
 document.addEventListener('DOMContentLoaded', function() {
     fetchWeatherAndPlot(53.349805, -6.26031); 
@@ -537,6 +500,42 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // =========================================================================================
 // ---------------------PREDICTION FUNCTION ------------------------------------------------
+function displayActualVsPredictedPlot(stationId) {
+    const requestData = {
+        station: stationId,
+    };
+    fetch("/predict", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData),
+    })
+        .then((response) => {
+            if (response.ok) {
+                return response.blob();
+            } else {
+                throw new Error("Failed to load the predicted plot image.");
+            }
+        })
+        .then((blob) => {
+            const imageUrl = URL.createObjectURL(blob);
+            const image = new Image();
+            image.src = imageUrl;
+            image.alt = "Predicted Data Plot";
+            image.style.width = "100%";
+            image.style.height = "auto";
+
+            const bikeDataDiv = document.getElementById("BikeModel");
+            bikeDataDiv.innerHTML = "";
+            bikeDataDiv.appendChild(image);
+        })
+        .catch((error) => {
+            console.error("Error fetching the Predicted Data Plot:", error);
+            document.getElementById("BikeModel").innerHTML =
+                "<p>Error loading plot.</p>";
+        });
+}
 
 function getPredictionForStation(station, weatherData) {
     if (!weatherData) {

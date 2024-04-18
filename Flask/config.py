@@ -20,4 +20,4 @@ CNX = mysql.connector.connect(
 # Google Maps API Key
 GOOGLE_MAPS_API_KEY = 'AIzaSyAZaEVm-iaqYgxEWMygoWmWAnxiCQwzalg'
 
-
+WEATHER_API_KEY = 'b1aedb14183d55850347826bc9afe2bb'
