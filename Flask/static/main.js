@@ -413,17 +413,12 @@ window.addEventListener('load', () => {
         })
         .catch(error => console.error('Error:', error));
 
-    // ---------------------WEATHER FUNCTION END ------------------------------------------------
-    //===========================================================================================
     // Update time every second
     const updateTime = () => {
         document.getElementById('current-time').textContent = new Date().toLocaleTimeString();
     };
     setInterval(updateTime, 1000);
 });
-
-
-
 
 
 function getWeatherAndPredict(station) {
@@ -435,74 +430,6 @@ function getWeatherAndPredict(station) {
         })
         .catch(error => console.error('Error fetching weather data:', error));
 }
-
-
-
-
-//TODO
-function getPredictionForStation(station, weatherData) {
-    if (!weatherData) {
-        console.error('weatherData is not available');
-        return;
-    }
-    const rain_hour_day = weatherData.rain_hour_day !== null ? weatherData.rain_hour_day : 0;
-    const dataForPrediction = {
-        number: station.place_id,
-        day_of_week: 1,
-        hour_per_day: 14,
-        rain_hour_day: rain_hour_day || 1,
-        temperature: weatherData.temperature || 11,
-        wind_speed: weatherData.wind_speed || 1,
-        available_bike_stands: station.available_bike_stands || 1,
-    };
-    fetch('/predict_static', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(dataForPrediction),
-    })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Prediction for Station:', data.prediction);
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-}
-
-
-
-
-function getHeatmap(stationId) {
-    const requestData = { station: stationId };
-    fetch('/plot_heatmap', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestData)
-    })
-    .then(response => response.blob())
-    .then(blob => {
-        const imageUrl = URL.createObjectURL(blob);
-        const bikeDataDiv = document.getElementById('bike-data');
-        // Clear any existing content
-        bikeDataDiv.innerHTML = '';
-        // Create a new img element
-        const heatmapImage = new Image();
-        heatmapImage.onload = function() {
-            bikeDataDiv.appendChild(heatmapImage);
-        };
-        heatmapImage.src = imageUrl;
-        heatmapImage.alt = 'Heatmap Image';
-        heatmapImage.style.width = '135%'; 
-        heatmapImage.style.height = '75%';
-        heatmapImage.style.marginRight = '-12%';
-    })  
-    .catch(error => {
-        console.error('Error fetching the heatmap image:', error);
-    });
-}
-
 
 
 function displayActualVsPredictedPlot(stationId) {
@@ -543,4 +470,134 @@ function displayActualVsPredictedPlot(stationId) {
 }
 
 
+document.addEventListener('DOMContentLoaded', function() {
+    fetchWeatherAndPlot(53.349805, -6.26031); 
 
+    function fetchWeatherAndPlot(lat, lon) {
+        fetch(`/fetch_weather/${lat}/${lon}`)
+        .then(response => response.json())
+        .then(data => {
+            const temperatures = data.list.map(entry => entry.main.temp);
+
+            // Set to keep track of the days that have been added to the labels array
+            const uniqueDays = new Set();
+            // Day names, but only add a day to the labels array if it's not already there
+            const labels = data.list.map(entry => {
+                const date = new Date(entry.dt * 1000); 
+                const day = date.toLocaleDateString('en-US', { weekday: 'long' });
+                if (!uniqueDays.has(day)) {
+                    uniqueDays.add(day);
+                    return day; 
+                }
+                return ''; 
+            }).filter(label => label); 
+    
+            plotWeatherData(labels, temperatures);
+        });
+    }
+    
+    
+
+    function plotWeatherData(labels, data) {
+        const ctx = document.getElementById('weatherChart').getContext('2d');
+        const tempChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Temperature (°C)',
+                    data: data,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: false
+                    },
+                    x: {
+                        ticks: {
+                            autoSkip: true, 
+                            maxTicksLimit: 20,
+                            maxRotation: 0, 
+                            minRotation: 0,
+                            fontSize: 14
+                        }
+                    }
+                }
+            }
+        });
+    }
+});    
+
+// ---------------------WEATHER FUNCTION END ------------------------------------------------
+//===========================================================================================
+
+
+// =========================================================================================
+// ---------------------PREDICTION FUNCTION ------------------------------------------------
+
+function getPredictionForStation(station, weatherData) {
+    if (!weatherData) {
+        console.error('weatherData is not available');
+        return;
+    }
+    const rain_hour_day = weatherData.rain_hour_day !== null ? weatherData.rain_hour_day : 0;
+    const dataForPrediction = {
+        number: station.place_id,
+        day_of_week: 1,
+        hour_per_day: 14,
+        rain_hour_day: rain_hour_day || 1,
+        temperature: weatherData.temperature || 11,
+        wind_speed: weatherData.wind_speed || 1,
+        available_bike_stands: station.available_bike_stands || 1,
+    };
+    fetch('/predict_static', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataForPrediction),
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Prediction for Station:', data.prediction);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+}
+
+
+function getHeatmap(stationId) {
+    const requestData = { station: stationId };
+    fetch('/plot_heatmap', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestData)
+    })
+    .then(response => response.blob())
+    .then(blob => {
+        const imageUrl = URL.createObjectURL(blob);
+        const bikeDataDiv = document.getElementById('bike-data');
+        // Clear any existing content
+        bikeDataDiv.innerHTML = '';
+        // Create a new img element
+        const heatmapImage = new Image();
+        heatmapImage.onload = function() {
+            bikeDataDiv.appendChild(heatmapImage);
+        };
+        heatmapImage.src = imageUrl;
+        heatmapImage.alt = 'Heatmap Image';
+        heatmapImage.style.width = 'auto'; 
+        heatmapImage.style.height = '110%';
+        heatmapImage.style.marginRight = '-12%';
+    })  
+    .catch(error => {
+        console.error('Error fetching the heatmap image:', error);
+    });
+}
+
+// ---------------------PREDICTION FUNCTION END --------------------------------------------
+//===========================================================================================

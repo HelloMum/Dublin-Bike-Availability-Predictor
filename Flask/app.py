@@ -3,7 +3,7 @@ import time
 import pandas as pd
 from flask import Flask, render_template, jsonify, send_file, request
 import matplotlib
-
+import requests
 matplotlib.use('Agg')  # Set the backend before importing pyplot
 from matplotlib import pyplot as plt
 import seaborn as sns
@@ -21,6 +21,7 @@ print("Starting app...")
 
 app = Flask(__name__)
 app.config["MAPS_APIKEY"] = config.GOOGLE_MAPS_API_KEY
+app.config["WEATHER_APIKEY"] = config.WEATHER_API_KEY
 DBconfig = config.CNX
 
 with app.app_context():
@@ -155,13 +156,21 @@ def generate_context_station(station):
         'wind_speed': wind_speed_list,
         'available_bike_stands': available_bike_stands_list
     })
-
     return input_data, hours_of_day
 
 @app.route("/")
 def index():
     static_all
     return render_template('index.html', stations=static_all, MAPS_APIKEY=app.config["MAPS_APIKEY"])
+
+
+@app.route('/fetch_weather/<lat>/<lon>')
+def fetch_weather(lat, lon):
+    api_key = app.config["WEATHER_APIKEY"] 
+    url = f"http://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={api_key}&units=metric"
+    response = requests.get(url)
+    weather_data = response.json()
+    return jsonify(weather_data)
 
 
 @app.route("/stations_dynamic")

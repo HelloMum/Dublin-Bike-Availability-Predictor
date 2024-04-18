@@ -86,23 +86,21 @@ body {
     border-left: 1px solid #0000003d; 
 }
 
-#bike-data {
+#BikeModel {
     position: absolute;
-    top: 120px;
-    right: 16px; 
-    width: calc(90%); 
-    height: calc(70%); 
-    background-color: rgba(255, 255, 255, 0.808);
-    z-index: 5;
-    padding: 10px;
+    top: 50%; 
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%; 
+    height: auto;
+    max-height: 50vh; 
+    background-color: rgb(255, 255, 255);
+    border: 1px solid #cccccc;
+    overflow-y: auto;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-    overflow: hidden; 
-    display: flex; 
-    justify-content: center;
-    align-items: center; 
-    overflow: hidden; 
+    padding: 20px;
+    margin-bottom: 20px; 
 }
-
 
 
 
@@ -163,21 +161,28 @@ body {
     background-color: rgba(255, 255, 255, 0.966);
 }
 
-#BikeModel {
-    position: absolute;
-    top: 50%; 
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80%; 
-    height: auto;
-    max-height: 50vh; 
-    background-color: rgb(255, 255, 255);
-    border: 1px solid #cccccc;
-    overflow-y: auto;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-    padding: 20px;
-    margin-bottom: 20px; 
+#weatherChart {
+    z-index: 9;
+    margin-top: 14%;
+    width: 100% !important;
+    height: auto !important;
 }
+
+
+#bike-data {
+    position: absolute;
+    top: 45%;
+    right: 16px; 
+    width: calc(90%); 
+    height: calc(50%); 
+    z-index: 5;
+    overflow: hidden; 
+    display: flex; 
+    justify-content: center;
+    align-items: center; 
+}
+
+
 
 
 
